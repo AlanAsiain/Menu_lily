@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Las Cazuelas de Lili - Menú Digital</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Playfair Display for rustic elegance, Inter for clean UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cazuela: {
+                            bg: '#fdfbf7',
+                            card: '#ffffff',
+                            primary: '#8B3A2B', // Terracota profundo
+                            secondary: '#D97706', // Ámbar cálido
+                            accent: '#C2410C', // Naranja rústico
+                            dark: '#2D150D',
+                            border: '#E7D7C1',
+                            cream: '#F4EADB',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fdfbf7;
+            background-image: radial-gradient(#e7d7c1 0.75px, transparent 0.75px);
+            background-size: 24px 24px;
+            font-family: 'Inter', sans-serif;
+            color: #2d150d;
+        }
+        .rustic-border {
+            border: 2px solid #E7D7C1;
+            box-shadow: 0 4px 6px -1px rgba(139, 58, 43, 0.05), 0 2px 4px -1px rgba(139, 58, 43, 0.03);
+        }
+        .rustic-card {
+            background: #ffffff;
+            border: 1px solid #E7D7C1;
+            transition: all 0.2s ease-in-out;
+        }
+        .rustic-card:hover {
+            border-color: #D97706;
+            box-shadow: 0 10px 15px -3px rgba(217, 119, 6, 0.1);
+        }
+        /* Custom scrollbar for clean modal scrolling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F4EADB;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D97706;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-amber-200 selection:text-amber-900">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-[#8B3A2B] text-amber-50 text-xs sm:text-sm py-2 px-4 text-center font-medium shadow-inner flex items-center justify-center gap-2">
+        <i class="fa-solid fa-utensils text-amber-300"></i>
+        <span>¡Comida casera con mucho sabor! Guisados diferentes todos los días en Valladolid, Yucatán.</span>
+        <i class="fa-solid fa-location-dot text-amber-300"></i>
+    </div>
+
+    <!-- Header / Brand Section -->
+    <header class="bg-gradient-to-b from-[#F4EADB] to-[#fdfbf7] border-b border-[#E7D7C1] py-6 px-4 sticky top-0 z-30 backdrop-blur-md bg-opacity-95">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-4 text-center sm:text-left">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#8B3A2B] text-amber-100 flex items-center justify-center border-4 border-[#D97706] shadow-md overflow-hidden flex-shrink-0">
+                    <img src="https://placehold.co/120x120/8B3A2B/F4EADB?text=Lili" alt="Lili Logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/120x120/8B3A2B/F4EADB?text=Lili'">
+                </div>
+                <div>
+                    <h1 class="font-serif font-black text-2xl sm:text-3xl text-[#8B3A2B] tracking-wide">Las Cazuelas de Lili</h1>
+                    <p class="text-xs sm:text-sm text-stone-600 font-medium italic">Tacos de Guisados & Antojitos Yucatecos</p>
+                </div>
+            </div>
+
+            <!-- Table Number & Admin/Cart Controls -->
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-center">
+                <!-- Table Selector Badge -->
+                <div onclick="openTableModal()" id="tableBadge" class="bg-amber-100 border border-amber-300 text-amber-900 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 cursor-pointer hover:bg-amber-200 transition shadow-sm">
+                    <i class="fa-solid fa-chair text-[#8B3A2B]"></i>
+                    <span id="tableLabel">Mesa: <strong id="currentTableNum" class="text-[#8B3A2B] text-base">Sin asignar</strong></span>
+                    <i class="fa-solid fa-pen text-xs text-stone-500 ml-1"></i>
+                </div>
+
+                <!-- Admin Button -->
+                <button onclick="openAdminLoginModal()" title="Panel de Administración" class="bg-stone-200 hover:bg-stone-300 text-stone-700 px-3 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-gear text-stone-600"></i>
+                    <span class="hidden md:inline">Admin</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 pb-32">
+
+        <!-- Search & Category Quick Filter -->
+        <div class="mb-6 flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <div class="relative w-full sm:w-72">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-stone-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="searchInput" oninput="filterMenu()" placeholder="Buscar platillo o guisado..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E7D7C1] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#8B3A2B] text-stone-800 shadow-sm">
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 scrollbar-none">
+                <button onclick="filterCategory('all')" id="cat-btn-all" class="cat-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-[#8B3A2B] text-white shadow-sm transition">Todo</button>
+                <button onclick="filterCategory('paquetes')" id="cat-btn-paquetes" class="cat-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-white text-stone-700 border border-[#E7D7C1] hover:bg-amber-50 transition">Paquetes</button>
+                <button onclick="filterCategory('platos')" id="cat-btn-platos" class="cat-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-white text-stone-700 border border-[#E7D7C1] hover:bg-amber-50 transition">Platos de Guisado</button>
+                <button onclick="filterCategory('antojitos')" id="cat-btn-antojitos" class="cat-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-white text-stone-700 border border-[#E7D7C1] hover:bg-amber-50 transition">Antojitos</button>
+                <button onclick="filterCategory('bebidas')" id="cat-btn-bebidas" class="cat-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-white text-stone-700 border border-[#E7D7C1] hover:bg-amber-50 transition">Bebidas</button>
+            </div>
+        </div>
+
+        <!-- Dynamic Menu Container -->
+        <div id="menuContainer" class="space-y-8">
+            <!-- Rendered dynamically by JavaScript -->
+        </div>
+
+    </main>
+
+    <!-- Sticky Floating Cart / Order Bar -->
+    <div id="cartBar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E7D7C1] shadow-2xl p-4 z-20 transition-transform transform translate-y-full duration-300">
+        <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-[#8B3A2B] text-amber-100 rounded-xl flex items-center justify-center font-bold text-lg shadow-md relative">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span id="cartCountBadge" class="absolute -top-2 -right-2 bg-[#D97706] text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold border-2 border-white">0</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-stone-800 text-sm sm:text-base">Tu Comanda Actual</h4>
+                    <p class="text-xs text-stone-500">Mesa: <span id="cartTableSummary" class="font-semibold text-[#8B3A2B]">No asignada</span></p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <span class="text-xs text-stone-500 block">Total estimado</span>
+                    <span id="cartTotalSummary" class="text-lg sm:text-xl font-black text-[#8B3A2B]">$0.00</span>
+                </div>
+                <button onclick="openCartModal()" class="bg-gradient-to-r from-[#8B3A2B] to-[#A0402E] hover:from-[#722F22] hover:to-[#8B3A2B] text-white font-bold px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm sm:text-base transition transform active:scale-95">
+                    <span>Ver Pedido</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE NUMBER MODAL -->
+    <div id="tableModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#E7D7C1] animate-in fade-in zoom-in duration-200">
+            <div class="text-center mb-5">
+                <div class="w-14 h-14 bg-amber-100 text-[#8B3A2B] rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                    <i class="fa-solid fa-chair"></i>
+                </div>
+                <h3 class="font-serif font-bold text-2xl text-[#8B3A2B]">¿En qué mesa te encuentras?</h3>
+                <p class="text-xs text-stone-500 mt-1">Por favor ingresa el número de tu mesa para poder llevarte tu pedido directamente.</p>
+            </div>
+            
+            <div class="mb-5">
+                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Número de Mesa</label>
+                <div class="grid grid-cols-5 gap-2 mb-3" id="quickTableButtons">
+                    <!-- Quick select buttons 1 to 10 generated via JS -->
+                </div>
+                <input type="number" id="tableInput" min="1" max="99" placeholder="Ej. 4" class="w-full px-4 py-3 bg-stone-50 border border-stone-300 rounded-xl text-center font-bold text-xl text-stone-800 focus:outline-none focus:ring-2 focus:ring-[#8B3A2B]">
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="saveTableNumber()" class="w-full bg-[#8B3A2B] hover:bg-[#722F22] text-white font-bold py-3 rounded-xl shadow-md transition">
+                    Confirmar Mesa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN PASSWORD MODAL -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-[#E7D7C1] animate-in fade-in zoom-in duration-200">
+            <div class="text-center mb-5">
+                <div class="w-14 h-14 bg-stone-100 text-[#8B3A2B] rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="font-serif font-bold text-xl text-[#8B3A2B]">Acceso Administrador</h3>
+                <p class="text-xs text-stone-500 mt-1">Ingresa la contraseña para modificar el menú y gestionar mesas.</p>
+            </div>
+            
+            <div class="mb-5">
+                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Contraseña</label>
+                <input type="password" id="adminPasswordInput" placeholder="" class="w-full px-4 py-3 bg-stone-50 border border-stone-300 rounded-xl text-center font-medium text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-[#8B3A2B]">
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeAdminLoginModal()" class="w-1/2 bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold py-2.5 rounded-xl text-sm transition">
+                    Cancelar
+                </button>
+                <button onclick="verifyAdminPassword()" class="w-1/2 bg-[#8B3A2B] hover:bg-[#722F22] text-white font-bold py-2.5 rounded-xl text-sm shadow-md transition">
+                    Entrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOMIZATION MODAL (Guisados / Aguas selector) -->
+    <div id="customizeModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl border border-[#E7D7C1] overflow-hidden animate-in fade-in zoom-in duration-200">
+            <!-- Modal Header -->
+            <div class="bg-[#F4EADB] p-4 border-b border-[#E7D7C1] flex items-center justify-between">
+                <div>
+                    <h3 id="modalItemTitle" class="font-serif font-bold text-lg text-[#8B3A2B]">Personalizar platillo</h3>
+                    <p id="modalItemSubtitle" class="text-xs text-stone-600">Selecciona tus opciones</p>
+                </div>
+                <button onclick="closeCustomizeModal()" class="w-8 h-8 rounded-full bg-white text-stone-600 hover:bg-amber-100 flex items-center justify-center transition shadow-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Dynamic inputs) -->
+            <div id="modalBodyContent" class="p-5 overflow-y-auto space-y-5 flex-grow">
+                <!-- Injected dynamically -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-stone-50 border-t border-[#E7D7C1] flex items-center justify-between">
+                <div>
+                    <span class="text-xs text-stone-500 block">Precio total</span>
+                    <span id="modalItemPrice" class="text-xl font-black text-[#8B3A2B]">$0.00</span>
+                </div>
+                <button onclick="confirmCustomizedItem()" class="bg-[#8B3A2B] hover:bg-[#722F22] text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Agregar al Pedido</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART / ORDER SUMMARY MODAL -->
+    <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl border border-[#E7D7C1] overflow-hidden animate-in fade-in zoom-in duration-200">
+            <!-- Header -->
+            <div class="bg-[#8B3A2B] text-white p-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-basket-shopping text-amber-300"></i>
+                    <h3 class="font-serif font-bold text-lg">Resumen de tu Comanda</h3>
+                </div>
+                <button onclick="closeCartModal()" class="w-8 h-8 rounded-full bg-stone-800 bg-opacity-30 hover:bg-opacity-50 text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Cart Table info badge -->
+            <div class="bg-amber-50 px-4 py-2.5 border-b border-amber-200 flex items-center justify-between text-xs font-semibold text-amber-900">
+                <span>Mesa asignada: <strong id="cartModalTableNum" class="text-[#8B3A2B] text-sm">--</strong></span>
+                <button onclick="openTableModal(); closeCartModal();" class="text-amber-700 underline hover:text-[#8B3A2B]">Cambiar mesa</button>
+            </div>
+
+            <!-- Items List -->
+            <div id="cartItemsList" class="p-4 overflow-y-auto space-y-3 flex-grow divide-y divide-stone-100">
+                <!-- Injected by JS -->
+            </div>
+
+            <!-- Order Notes / Observations -->
+            <div class="px-4 py-2 bg-stone-50 border-t border-stone-200">
+                <label class="block text-xs font-bold text-stone-600 mb-1">Notas adicionales para cocina (opcional):</label>
+                <input type="text" id="orderNotes" placeholder="Ej. Sin cebolla, tortillas bien calientes..." class="w-full px-3 py-2 text-xs bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+            </div>
+
+            <!-- Footer & WhatsApp Send Button -->
+            <div class="p-4 bg-white border-t border-[#E7D7C1]">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm font-semibold text-stone-600">Total a pagar:</span>
+                    <span id="cartModalTotal" class="text-2xl font-black text-[#8B3A2B]">$0.00</span>
+                </div>
+                <button onclick="sendOrderToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-base transition transform active:scale-95">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                    <span>Enviar Pedido por WhatsApp</span>
+                </button>
+                <p class="text-[11px] text-center text-stone-400 mt-2">Al hacer clic se abrirá WhatsApp con tu comanda detallada para Lili.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL MODAL -->
+    <div id="adminModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-[#E7D7C1] overflow-hidden animate-in fade-in zoom-in duration-200">
+            <!-- Header -->
+            <div class="bg-[#2D150D] text-amber-100 p-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-gear text-[#D97706]"></i>
+                    <h3 class="font-serif font-bold text-lg">Panel de Administración - Las Cazuelas de Lili</h3>
+                </div>
+                <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-stone-800 text-stone-300 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Tabs inside Admin -->
+            <div class="flex bg-stone-100 border-b border-stone-200 text-xs font-semibold overflow-x-auto scrollbar-none">
+                <button onclick="switchAdminTab('guisados')" id="adm-tab-guisados" class="flex-1 py-3 px-4 text-center border-b-2 border-[#8B3A2B] text-[#8B3A2B] bg-white transition whitespace-nowrap">Guisados del Día</button>
+                <button onclick="switchAdminTab('aguas')" id="adm-tab-aguas" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Aguas del Día</button>
+                <button onclick="switchAdminTab('refrescos')" id="adm-tab-refrescos" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Refrescos</button>
+                <button onclick="switchAdminTab('menu')" id="adm-tab-menu" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Platillos y Precios</button>
+                <button onclick="switchAdminTab('qr')" id="adm-tab-qr" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Códigos QR Mesas</button>
+                <button onclick="switchAdminTab('settings')" id="adm-tab-settings" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Configuración</button>
+            </div>
+
+            <!-- Admin Body Content -->
+            <div class="p-5 overflow-y-auto flex-grow space-y-4" id="adminBodyContent">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Admin Footer -->
+            <div class="p-4 bg-stone-50 border-t border-stone-200 flex justify-between items-center">
+                <button onclick="resetDataToDefault()" class="text-xs text-rose-600 hover:underline flex items-center gap-1 font-medium">
+                    <i class="fa-solid fa-rotate-left"></i> Restaurar valores
+                </button>
+                <button onclick="saveAdminChanges()" class="bg-[#8B3A2B] hover:bg-[#722F22] text-white font-bold px-6 py-2.5 rounded-xl text-sm shadow transition">
+                    Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- General Notification Toast -->
+    <div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-stone-900 bg-opacity-95 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-medium z-50 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage">Platillo agregado al pedido</span>
+    </div>
+
+    <!-- Footer Credit -->
+    <footer class="text-center py-6 text-xs text-stone-500 border-t border-[#E7D7C1] mt-auto">
+        <p class="font-serif text-[#8B3A2B] font-bold text-sm">Las Cazuelas de Lili • Valladolid, Yucatán</p>
+        <p class="mt-1">Comida casera tradicional con el auténtico sazón yucateco.</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        const DEFAULT_STORE_DATA = {
+            whatsappNumber: "5219850000000",
+            adminPassword: "lili123",
+            dailyGuisados: [
+                { name: "Cochinita Pibil", available: true },
+                { name: "Longaniza de Valladolid", available: true },
+                { name: "Frijol con Puerco", available: true },
+                { name: "Pavo en Escabeche", available: true },
+                { name: "Relleno Negro", available: true },
+                { name: "Pollo Pibil", available: true },
+                { name: "Chicharrón en Salsa Verde", available: true },
+                { name: "Picadillo Yucateco", available: true }
+            ],
+            dailyAguas: [
+                { name: "Agua de Horchata", available: true },
+                { name: "Agua de Jamaica", available: true },
+                { name: "Agua de Limón con Chaya", available: true },
+                { name: "Agua de Piña", available: true },
+                { name: "Agua de Melón", available: true }
+            ],
+            dailyRefrescos: [
+                { name: "Coca-Cola Original", available: true },
+                { name: "Coca-Cola Sin Azúcar", available: true },
+                { name: "Manzanita Sol", available: true },
+                { name: "Sprite", available: true },
+                { name: "Fanta Naranja", available: true },
+                { name: "SdP Cristal Cebada", available: true }
+            ],
+            categories: [
+                {
+                    id: "paquetes",
+                    name: "Paquetes",
+                    description: "Disfruta nuestros paquetes completos con agua fresca de 500 ml",
+                    icon: "fa-box-open",
+                    items: [
+                        {
+                            id: "p1",
+                            name: "3 tacos de guisado + agua fresca (500 ml)",
+                            description: "Incluye 3 tacos de guisados a elegir del día + 1 agua fresca (500 ml).",
+                            price: 110,
+                            image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=3+Tacos+%2B+Agua",
+                            requiresGuisados: 3,
+                            requiresAgua: 1,
+                            aguaSize: "500ml"
+                        }
+                    ]
+                },
+                {
+                    id: "platos",
+                    name: "Platos de Guisado",
+                    description: "Incluye arroz, frijoles, tortillas hechas a mano y agua fresca (500 ml).",
+                    icon: "fa-bowl-food",
+                    items: [
+                        {
+                            id: "pl1",
+                            name: "Orden de 1 guiso",
+                            description: "Acompañado de arroz, frijoles, tortilla y agua fresca de 500 ml.",
+                            price: 120,
+                            image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Orden+1+Guiso",
+                            requiresGuisados: 1,
+                            requiresAgua: 1,
+                            aguaSize: "500ml"
+                        },
+                        {
+                            id: "pl2",
+                            name: "Orden de 2 guisos",
+                            description: "Acompañado de arroz, frijoles, tortilla y agua fresca de 500 ml.",
+                            price: 130,
+                            image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Orden+2+Guisos",
+                            requiresGuisados: 2,
+                            requiresAgua: 1,
+                            aguaSize: "500ml"
+                        },
+                        {
+                            id: "pl3",
+                            name: "Orden de 3 guisos",
+                            description: "Acompañado de arroz, frijoles, tortilla y agua fresca de 500 ml.",
+                            price: 140,
+                            image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Orden+3+Guisos",
+                            requiresGuisados: 3,
+                            requiresAgua: 1,
+                            aguaSize: "500ml"
+                        }
+                    ]
+                },
+                {
+                    id: "antojitos",
+                    name: "Antojitos",
+                    description: "Los favoritos de la casa preparados al momento con auténtico sazón.",
+                    icon: "fa-utensils",
+                    items: [
+                        { id: "a1", name: "Quesadilla sencilla", description: "Quesadilla crujiente con queso fundido.", price: 60, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Quesadilla+Sencilla" },
+                        { id: "a2", name: "Quesadilla con guisado", description: "Quesadilla con queso y tu guisado del día favorito.", price: 80, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Quesadilla+Guisado", requiresGuisados: 1 },
+                        { id: "a3", name: "Chilaquiles", description: "Totopos crujientes con salsa casera, crema, queso, frijoles y tu proteína a elegir.", price: 110, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Chilaquiles", requiresChilaquilesOpts: true },
+                        { id: "a5", name: "Flautas", description: "Orden de flautas crujientes doraditas.", price: 110, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Flautas" },
+                        { id: "a6", name: "Taco de guisado", description: "Taco individual con tortilla recién hecha y guisado del día a elegir.", price: 35, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Taco+Guisado", requiresGuisados: 1 },
+                        { id: "a7", name: "Enchiladas", description: "Enchiladas caseras servidas calientitas con tu salsa y proteína a elegir.", price: 110, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Enchiladas", requiresChilaquilesOpts: true },
+                        { id: "a9", name: "Enmoladas", description: "Bañadas en nuestro delicioso mole casero.", price: 120, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Enmoladas" },
+                        { id: "a10", name: "Pozole", description: "Pozole calientito con su guarnición completa.", price: 120, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Pozole" },
+                        { id: "a11", name: "Panceta de res", description: "Caldo tradicional de panceta de res.", price: 150, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Panceta+Res" }
+                    ]
+                },
+                {
+                    id: "bebidas",
+                    name: "Bebidas",
+                    description: "Refrescantes aguas del día y bebidas para acompañar tus alimentos.",
+                    icon: "fa-glass-water",
+                    items: [
+                        { id: "b1", name: "Agua fresca (1 litro)", description: "Deliciosa agua fresca del día de 1 litro.", price: 60, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Agua+1L", requiresAgua: 1, aguaSize: "1L" },
+                        { id: "b2", name: "Agua fresca (500 ml)", description: "Refrescante agua fresca del día de 500 ml.", price: 40, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Agua+500ml", requiresAgua: 1, aguaSize: "500ml" },
+                        { id: "b3", name: "Refresco", description: "Sabor a elegir según disponibilidad.", price: 40, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Refresco", requiresRefresco: true },
+                        { id: "b4", name: "Agua embotellada", description: "Botella de agua purificada 600ml.", price: 30, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Agua+Embotellada" },
+                        { id: "b5", name: "Café de olla", description: "Café tradicional con canela y piloncillo.", price: 40, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Cafe+Olla" },
+                        { id: "b6", name: "Café americano", description: "Café americano caliente.", price: 40, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Cafe+Americano" },
+                        { id: "b7", name: "Capuchino", description: "Café capuchino con espuma cremosa.", price: 60, image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Capuchino" }
+                    ]
+                }
+            ]
+        };
+
+        let storeData = JSON.parse(localStorage.getItem('cazuelas_store_data')) || DEFAULT_STORE_DATA;
+
+        if (storeData.dailyGuisados && typeof storeData.dailyGuisados[0] === 'string') {
+            storeData.dailyGuisados = storeData.dailyGuisados.map(g => ({ name: g, available: true }));
+        }
+        if (storeData.dailyAguas && typeof storeData.dailyAguas[0] === 'string') {
+            storeData.dailyAguas = storeData.dailyAguas.map(a => ({ name: a, available: true }));
+        }
+        if (!storeData.dailyRefrescos) {
+            storeData.dailyRefrescos = DEFAULT_STORE_DATA.dailyRefrescos;
+        }
+
+        let currentTable = localStorage.getItem('cazuelas_table') || null;
+        let cart = JSON.parse(localStorage.getItem('cazuelas_cart')) || [];
+        let currentFilter = 'all';
+        let activeCustomItem = null;
+        let activeAdminTab = 'guisados';
+
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            if (!toast || !toastMessage || !toastIcon) return;
+
+            toastMessage.textContent = msg;
+            if (type === "error") {
+                toastIcon.className = "fa-solid fa-circle-xmark text-rose-400";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+            }
+
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2800);
+        }
+
+        function updateTableUI() {
+            const numLabel = document.getElementById('currentTableNum');
+            const cartTableSummary = document.getElementById('cartTableSummary');
+            const cartModalTableNum = document.getElementById('cartModalTableNum');
+
+            if (currentTable) {
+                if (numLabel) numLabel.textContent = currentTable;
+                if (cartTableSummary) cartTableSummary.textContent = `Mesa ${currentTable}`;
+                if (cartModalTableNum) cartModalTableNum.textContent = `Mesa ${currentTable}`;
+            } else {
+                if (numLabel) numLabel.textContent = "Sin asignar";
+                if (cartTableSummary) cartTableSummary.textContent = "No asignada";
+                if (cartModalTableNum) cartModalTableNum.textContent = "--";
+            }
+        }
+
+        function openTableModal() {
+            const modal = document.getElementById('tableModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeTableModal() {
+            const modal = document.getElementById('tableModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function selectQuickTable(num) {
+            const tableInput = document.getElementById('tableInput');
+            if (tableInput) tableInput.value = num;
+        }
+
+        function saveTableNumber() {
+            const tableInput = document.getElementById('tableInput');
+            if (!tableInput || !tableInput.value) {
+                showToast("Por favor ingresa un número de mesa válido", "error");
+                return;
+            }
+            currentTable = tableInput.value;
+            localStorage.setItem('cazuelas_table', currentTable);
+            updateTableUI();
+            closeTableModal();
+            showToast(`Mesa ${currentTable} asignada con éxito`);
+        }
+
+        function buildQuickTableButtons() {
+            const container = document.getElementById('quickTableButtons');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const btn = document.createElement('button');
+                btn.className = "py-2 bg-amber-50 hover:bg-amber-200 text-amber-900 border border-amber-300 rounded-xl font-bold text-sm transition";
+                btn.textContent = i;
+                btn.onclick = () => selectQuickTable(i);
+                container.appendChild(btn);
+            }
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const searchVal = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
+
+            storeData.categories.forEach(cat => {
+                if (currentFilter !== 'all' && cat.id !== currentFilter) return;
+
+                const filteredItems = cat.items.filter(item => {
+                    if (!searchVal) return true;
+                    return item.name.toLowerCase().includes(searchVal) || item.description.toLowerCase().includes(searchVal);
+                });
+
+                if (filteredItems.length === 0) return;
+
+                const section = document.createElement('section');
+                section.className = "space-y-4";
+
+                section.innerHTML = `
+                    <div class="flex items-center gap-3 border-b-2 border-[#E7D7C1] pb-2">
+                        <div class="w-10 h-10 rounded-xl bg-[#8B3A2B] text-amber-100 flex items-center justify-center font-bold text-lg shadow-sm">
+                            <i class="fa-solid ${cat.icon || 'fa-utensils'}"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-serif font-black text-xl text-[#8B3A2B]">${cat.name}</h2>
+                            <p class="text-xs text-stone-500">${cat.description}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cat-items-${cat.id}"></div>
+                `;
+
+                container.appendChild(section);
+
+                const itemsGrid = section.querySelector(`#cat-items-${cat.id}`);
+
+                filteredItems.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "rustic-card rounded-2xl p-4 flex gap-4 items-center justify-between shadow-sm cursor-pointer hover:shadow-md transition";
+                    card.onclick = () => handleItemClick(item.id);
+
+                    card.innerHTML = `
+                        <div class="flex-grow space-y-1.5">
+                            <h3 class="font-bold text-stone-800 text-sm sm:text-base leading-tight">${item.name}</h3>
+                            <p class="text-xs text-stone-500 line-clamp-2">${item.description}</p>
+                            <div class="flex items-center gap-2 pt-1">
+                                <span class="font-black text-[#8B3A2B] text-base">$${item.price}.00</span>
+                                ${item.requiresGuisados || item.requiresAgua || item.requiresChilaquilesOpts || item.requiresRefresco ? '<span class="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">Personalizable</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-stone-100 flex-shrink-0 border border-[#E7D7C1]">
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/120x120/8B3A2B/F4EADB?text=Lili'">
+                            <button onclick="event.stopPropagation(); handleItemClick('${item.id}')" class="absolute bottom-2 right-2 bg-[#8B3A2B] text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:bg-[#722F22] transition">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    `;
+                    itemsGrid.appendChild(card);
+                });
+            });
+        }
+
+        function filterCategory(catId) {
+            currentFilter = catId;
+            document.querySelectorAll('.cat-tab').forEach(btn => {
+                btn.className = "cat-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-white text-stone-700 border border-[#E7D7C1] hover:bg-amber-50 transition";
+            });
+            const activeBtn = document.getElementById(`cat-btn-${catId}`);
+            if (activeBtn) {
+                activeBtn.className = "cat-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-[#8B3A2B] text-white shadow-sm transition";
+            }
+            renderMenu();
+        }
+
+        function filterMenu() {
+            renderMenu();
+        }
+
+        function addToCart(cartItem) {
+            cartItem.cartId = Date.now() + Math.random().toString(36).substring(2, 5);
+            cart.push(cartItem);
+            saveCart();
+            showToast(`¡${cartItem.name} agregado al pedido!`);
+        }
+
+        function removeFromCart(cartId) {
+            cart = cart.filter(i => i.cartId !== cartId);
+            saveCart();
+            showToast("Platillo eliminado de la comanda", "error");
+        }
+
+        function openCartModal() {
+            renderCartModalItems();
+            document.getElementById('cartModal').classList.remove('hidden');
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').classList.add('hidden');
+        }
+
+        function updateCartUI() {
+            const cartCountBadge = document.getElementById('cartCountBadge');
+            const cartBar = document.getElementById('cartBar');
+            const cartTotalSummary = document.getElementById('cartTotalSummary');
+            
+            const totalItems = cart.reduce((sum, item) => sum + 1, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+
+            if (cartCountBadge) cartCountBadge.textContent = totalItems;
+            if (cartTotalSummary) cartTotalSummary.textContent = `$${totalPrice}.00`;
+
+            if (cartBar) {
+                if (cart.length > 0) {
+                    cartBar.classList.remove('translate-y-full');
+                } else {
+                    cartBar.classList.add('translate-y-full');
+                }
+            }
+
+            renderCartModalItems();
+        }
+
+        function openAdminLoginModal() {
+            const modal = document.getElementById('adminLoginModal');
+            if (modal) {
+                document.getElementById('adminPasswordInput').value = '';
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeAdminLoginModal() {
+            const modal = document.getElementById('adminLoginModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const input = document.getElementById('adminPasswordInput')?.value;
+            const correctPass = storeData.adminPassword || "lili123";
+
+            if (input === correctPass) {
+                closeAdminLoginModal();
+                openAdminModal();
+            } else {
+                showToast("Contraseña incorrecta", "error");
+            }
+        }
+
+        function openAdminModal() {
+            switchAdminTab('guisados');
+            const modal = document.getElementById('adminModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            const modal = document.getElementById('adminModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function renderAdminMenuEditor() {
+            const container = document.getElementById('adminMenuCategories');
+            if (!container) return;
+            container.innerHTML = '';
+
+            storeData.categories.forEach((cat, catIdx) => {
+                const catDiv = document.createElement('div');
+                catDiv.className = "space-y-2 border border-stone-200 p-3 rounded-xl bg-stone-50";
+                catDiv.innerHTML = `<h5 class="font-bold text-stone-800 text-xs uppercase tracking-wide border-b pb-1">${cat.name}</h5>`;
+
+                cat.items.forEach((item, itemIdx) => {
+                    const row = document.createElement('div');
+                    row.className = "flex items-center gap-2 bg-white p-2 rounded-lg border border-stone-200 text-xs";
+                    row.innerHTML = `
+                        <input type="text" value="${item.name}" onchange="updateMenuItemName(${catIdx}, ${itemIdx}, this.value)" class="flex-grow px-2 py-1 border border-stone-300 rounded font-medium text-stone-800">
+                        <span class="font-bold text-stone-500">$</span>
+                        <input type="number" value="${item.price}" onchange="updateMenuItemPrice(${catIdx}, ${itemIdx}, this.value)" class="w-16 px-2 py-1 border border-stone-300 rounded font-bold text-center text-[#8B3A2B]">
+                    `;
+                    catDiv.appendChild(row);
+                });
+                container.appendChild(catDiv);
+            });
+        }
+
+        function updateMenuItemName(catIdx, itemIdx, val) {
+            storeData.categories[catIdx].items[itemIdx].name = val;
+        }
+
+        function updateMenuItemPrice(catIdx, itemIdx, val) {
+            storeData.categories[catIdx].items[itemIdx].price = parseFloat(val) || 0;
+        }
+
+        function generateTableQR(num) {
+            const inputVal = num || document.getElementById('qrTableNumInput')?.value || 1;
+            const container = document.getElementById('qrResultContainer');
+            if (!container) return;
+
+            const cleanURL = window.location.href.split('?')[0].split('#')[0];
+            const tableURL = `${cleanURL}?table=${inputVal}`;
+
+            container.innerHTML = `
+                <div class="font-bold text-stone-800 text-sm">Mesa #${inputVal}</div>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(tableURL)}" alt="QR Mesa ${inputVal}" class="mx-auto border-4 border-white shadow-md rounded-xl">
+                <p class="text-[11px] text-stone-500 truncate mt-2 max-w-xs mx-auto">URL: ${tableURL}</p>
+                <div class="flex justify-center gap-3 mt-2">
+                    <button onclick="window.open('${tableURL}', '_blank')" class="text-xs text-[#8B3A2B] font-bold underline">Probar Enlace</button>
+                    <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(tableURL)}" target="_blank" download="QR_Mesa_${inputVal}.png" class="text-xs bg-[#8B3A2B] text-white px-2.5 py-1 rounded-lg font-medium shadow-sm hover:bg-[#722F22]">Descargar QR HD</a>
+                </div>
+            `;
+        }
+
+        function saveAdminChanges() {
+            const waInput = document.getElementById('adminWhatsAppInput');
+            const passInput = document.getElementById('adminNewPassInput');
+
+            if (waInput) storeData.whatsappNumber = waInput.value.trim();
+            if (passInput && passInput.value.trim()) storeData.adminPassword = passInput.value.trim();
+
+            saveData();
+            renderMenu();
+            closeAdminModal();
+            showToast("¡Cambios guardados con éxito!");
+        }
+
+        function resetDataToDefault() {
+            if (confirm("¿Estás seguro de que deseas restaurar los valores y menú originales?")) {
+                storeData = JSON.parse(JSON.stringify(DEFAULT_STORE_DATA));
+                saveData();
+                renderMenu();
+                renderAdminContent();
+                showToast("Menú restaurado a valores por defecto");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tableParam = urlParams.get('table');
+            if (tableParam) {
+                currentTable = tableParam;
+                localStorage.setItem('cazuelas_table', currentTable);
+            }
+
+            updateTableUI();
+            renderMenu();
+            updateCartUI();
+            buildQuickTableButtons();
+
+            if (!currentTable) {
+                openTableModal();
+            }
+        });
+
+        function saveData() {
+            localStorage.setItem('cazuelas_store_data', JSON.stringify(storeData));
+        }
+
+        function saveCart() {
+            localStorage.setItem('cazuelas_cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        function findItemById(id) {
+            for (let cat of storeData.categories) {
+                for (let item of cat.items) {
+                    if (item.id === id) return item;
+                }
+            }
+            return null;
+        }
+
+        function handleItemClick(itemId) {
+            const item = findItemById(itemId);
+            if (!item) return;
+
+            if (item.requiresGuisados || item.requiresAgua || item.requiresChilaquilesOpts || item.requiresRefresco) {
+                openCustomizeModal(item);
+            } else {
+                addToCart({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    customizations: {}
+                });
+            }
+        }
+
+        function openCustomizeModal(item) {
+            activeCustomItem = item;
+            document.getElementById('modalItemTitle').textContent = item.name;
+            document.getElementById('modalItemSubtitle').textContent = item.description;
+            document.getElementById('modalItemPrice').textContent = `$${item.price}.00`;
+
+            const body = document.getElementById('modalBodyContent');
+            body.innerHTML = '';
+
+            if (item.requiresRefresco) {
+                const refrescosDiv = document.createElement('div');
+                refrescosDiv.className = "space-y-2";
+                refrescosDiv.innerHTML = `<label class="block text-xs font-bold text-stone-700 uppercase tracking-wide">Selecciona el refresco:</label>`;
+
+                const select = document.createElement('select');
+                select.id = "refresco-select-main";
+                select.className = "w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm text-stone-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]";
+                
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = "";
+                defaultOpt.textContent = `-- Elige tu refresco --`;
+                select.appendChild(defaultOpt);
+
+                const availableRefrescos = storeData.dailyRefrescos.filter(r => r.available);
+
+                if (availableRefrescos.length === 0) {
+                    refrescosDiv.innerHTML += `<p class="text-xs text-rose-600 font-semibold">Por el momento todos los refrescos están agotados.</p>`;
+                } else {
+                    availableRefrescos.forEach(refresco => {
+                        const opt = document.createElement('option');
+                        opt.value = refresco.name;
+                        opt.textContent = refresco.name;
+                        select.appendChild(opt);
+                    });
+                    refrescosDiv.appendChild(select);
+                }
+                body.appendChild(refrescosDiv);
+            }
+
+            if (item.requiresChilaquilesOpts) {
+                const optsDiv = document.createElement('div');
+                optsDiv.className = "space-y-4";
+                optsDiv.innerHTML = `
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wide">1. Selecciona el tipo de salsa:</label>
+                        <select id="salsa-select-opt" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm text-stone-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+                            <option value="">-- Elige la salsa --</option>
+                            <option value="Salsa Verde">Salsa Verde</option>
+                            <option value="Salsa Roja">Salsa Roja</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wide">2. Selecciona tu complemento / proteína:</label>
+                        <select id="proteina-select-opt" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm text-stone-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+                            <option value="">-- Elige el acompañamiento --</option>
+                            <option value="Pollo">Con Pollo</option>
+                            <option value="Huevo">Con Huevo</option>
+                        </select>
+                    </div>
+                `;
+                body.appendChild(optsDiv);
+            }
+
+            if (item.requiresGuisados) {
+                const count = item.requiresGuisados;
+                const guisadosDiv = document.createElement('div');
+                guisadosDiv.className = "space-y-2";
+                guisadosDiv.innerHTML = `
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wide">Selecciona ${count} guisado(s) del día:</label>
+                    <p class="text-[11px] text-stone-500">Puedes repetir guisado o elegir diferentes.</p>
+                `;
+
+                const availableGuisados = storeData.dailyGuisados.filter(g => g.available);
+
+                if (availableGuisados.length === 0) {
+                    guisadosDiv.innerHTML += `<p class="text-xs text-rose-600 font-semibold">No hay guisados disponibles actualmente.</p>`;
+                } else {
+                    for (let i = 0; i < count; i++) {
+                        const select = document.createElement('select');
+                        select.className = "guisado-select w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm text-stone-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]";
+                        
+                        const defaultOpt = document.createElement('option');
+                        defaultOpt.value = "";
+                        defaultOpt.textContent = `-- Elige el guisado #${i + 1} --`;
+                        select.appendChild(defaultOpt);
+
+                        availableGuisados.forEach(guisado => {
+                            const opt = document.createElement('option');
+                            opt.value = guisado.name;
+                            opt.textContent = guisado.name;
+                            select.appendChild(opt);
+                        });
+
+                        guisadosDiv.appendChild(select);
+                    }
+                }
+                body.appendChild(guisadosDiv);
+            }
+
+            if (item.requiresAgua) {
+                const aguasDiv = document.createElement('div');
+                aguasDiv.className = "space-y-2";
+                aguasDiv.innerHTML = `<label class="block text-xs font-bold text-stone-700 uppercase tracking-wide">Selecciona el sabor de tu agua fresca (${item.aguaSize || '500ml'}):</label>`;
+
+                const select = document.createElement('select');
+                select.id = "agua-select-main";
+                select.className = "w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm text-stone-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]";
+                
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = "";
+                defaultOpt.textContent = `-- Elige el sabor del agua --`;
+                select.appendChild(defaultOpt);
+
+                const availableAguas = storeData.dailyAguas.filter(a => a.available);
+
+                if (availableAguas.length === 0) {
+                    aguasDiv.innerHTML += `<p class="text-xs text-rose-600 font-semibold">No hay sabores de agua disponibles actualmente.</p>`;
+                } else {
+                    availableAguas.forEach(agua => {
+                        const opt = document.createElement('option');
+                        opt.value = agua.name;
+                        opt.textContent = agua.name;
+                        select.appendChild(opt);
+                    });
+
+                    aguasDiv.appendChild(select);
+                }
+                body.appendChild(aguasDiv);
+            }
+
+            document.getElementById('customizeModal').classList.remove('hidden');
+        }
+
+        function closeCustomizeModal() {
+            document.getElementById('customizeModal').classList.add('hidden');
+            activeCustomItem = null;
+        }
+
+        function confirmCustomizedItem() {
+            if (!activeCustomItem) return;
+
+            let customizations = {};
+
+            if (activeCustomItem.requiresRefresco) {
+                const refrescoSel = document.getElementById('refresco-select-main');
+                if (!refrescoSel || !refrescoSel.value) {
+                    showToast("Por favor selecciona el refresco de tu preferencia", "error");
+                    return;
+                }
+                customizations.refresco = refrescoSel.value;
+            }
+
+            if (activeCustomItem.requiresChilaquilesOpts) {
+                const salsa = document.getElementById('salsa-select-opt')?.value;
+                const proteina = document.getElementById('proteina-select-opt')?.value;
+                if (!salsa || !proteina) {
+                    showToast("Por favor selecciona la salsa y el acompañamiento (pollo o huevo)", "error");
+                    return;
+                }
+                customizations.salsa = salsa;
+                customizations.proteina = proteina;
+            }
+
+            if (activeCustomItem.requiresGuisados) {
+                const selects = document.querySelectorAll('.guisado-select');
+                let chosenGuisados = [];
+                for (let sel of selects) {
+                    if (!sel.value) {
+                        showToast("Por favor selecciona todos los guisados requeridos", "error");
+                        return;
+                    }
+                    chosenGuisados.push(sel.value);
+                }
+                customizations.guisados = chosenGuisados;
+            }
+
+            if (activeCustomItem.requiresAgua) {
+                const aguaSel = document.getElementById('agua-select-main');
+                if (!aguaSel || !aguaSel.value) {
+                    showToast("Por favor selecciona el sabor de tu agua", "error");
+                    return;
+                }
+                customizations.agua = aguaSel.value;
+                customizations.aguaSize = activeCustomItem.aguaSize || '500ml';
+            }
+
+            addToCart({
+                id: activeCustomItem.id,
+                name: activeCustomItem.name,
+                price: activeCustomItem.price,
+                customizations: customizations
+            });
+
+            closeCustomizeModal();
+        }
+
+        function renderCartModalItems() {
+            const list = document.getElementById('cartItemsList');
+            if (!list) return;
+            list.innerHTML = '';
+
+            let totalPrice = 0;
+
+            cart.forEach(item => {
+                totalPrice += item.price;
+                const div = document.createElement('div');
+                div.className = "py-3 flex items-start justify-between gap-3";
+
+                let customText = "";
+                if (item.customizations) {
+                    if (item.customizations.refresco) {
+                        customText += `<div class="text-[11px] text-[#8B3A2B] font-medium"><i class="fa-solid fa-bottle-water mr-1"></i> Refresco: ${item.customizations.refresco}</div>`;
+                    }
+                    if (item.customizations.salsa && item.customizations.proteina) {
+                        customText += `<div class="text-[11px] text-[#8B3A2B] font-medium"><i class="fa-solid fa-pepper-hot mr-1"></i> Opción: ${item.customizations.salsa} con ${item.customizations.proteina}</div>`;
+                    }
+                    if (item.customizations.guisados) {
+                        customText += `<div class="text-[11px] text-[#8B3A2B] font-medium"><i class="fa-solid fa-bowl-food mr-1"></i> Guisados: ${item.customizations.guisados.join(', ')}</div>`;
+                    }
+                    if (item.customizations.agua) {
+                        customText += `<div class="text-[11px] text-amber-700 font-medium"><i class="fa-solid fa-glass-water mr-1"></i> Agua (${item.customizations.aguaSize}): ${item.customizations.agua}</div>`;
+                    }
+                }
+
+                div.innerHTML = `
+                    <div class="flex-grow">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-stone-800 text-sm">${item.name}</h4>
+                            <span class="font-bold text-[#8B3A2B] text-sm">$${item.price}.00</span>
+                        </div>
+                        ${customText}
+                    </div>
+                    <button onclick="removeFromCart('${item.cartId}')" class="text-stone-400 hover:text-rose-600 p-1 transition" title="Eliminar platillo">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                `;
+                list.appendChild(div);
+            });
+
+            const cartModalTotal = document.getElementById('cartModalTotal');
+            if (cartModalTotal) cartModalTotal.textContent = `$${totalPrice}.00`;
+        }
+
+        function sendOrderToWhatsApp() {
+            if (!currentTable) {
+                openTableModal();
+                closeCartModal();
+                showToast("Por favor indica tu número de mesa primero", "error");
+                return;
+            }
+            if (cart.length === 0) {
+                showToast("Tu carrito está vacío", "error");
+                return;
+            }
+
+            const notes = document.getElementById('orderNotes').value.trim();
+            let totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+
+            let message = `*🌮 NUEVO PEDIDO - LAS CAZUELAS DE LILI 🌮*\n\n`;
+            message += `📍 *Mesa:* ${currentTable}\n`;
+            message += `⏰ *Hora:* ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n\n`;
+            message += `------------------------------------\n`;
+            message += `*DETALLE DE LA COMANDA:*\n`;
+
+            cart.forEach((item, index) => {
+                message += `${index + 1}. *${item.name}* - $${item.price}\n`;
+                if (item.customizations) {
+                    if (item.customizations.refresco) {
+                        message += `   🥤 Refresco: ${item.customizations.refresco}\n`;
+                    }
+                    if (item.customizations.salsa && item.customizations.proteina) {
+                        message += `   🌶️ Opción: ${item.customizations.salsa} con ${item.customizations.proteina}\n`;
+                    }
+                    if (item.customizations.guisados) {
+                        message += `   🍲 Guisados: ${item.customizations.guisados.join(' + ')}\n`;
+                    }
+                    if (item.customizations.agua) {
+                        message += `   🥤 Agua (${item.customizations.aguaSize}): ${item.customizations.agua}\n`;
+                    }
+                }
+            });
+
+            message += `------------------------------------\n`;
+            if (notes) {
+                message += `📝 *Notas:* ${notes}\n`;
+            }
+            message += `💰 *TOTAL A PAGAR: $${totalPrice}.00 MXN*\n\n`;
+            message += `_Por favor confirmar pedido._`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const phone = storeData.whatsappNumber || "5219850000000";
+            const whatsappURL = `https://wa.me/${phone}?text=${encodedMessage}`;
+
+            window.open(whatsappURL, '_blank');
+        }
+
+        function switchAdminTab(tab) {
+            activeAdminTab = tab;
+            ['guisados', 'aguas', 'refrescos', 'menu', 'qr', 'settings'].forEach(t => {
+                const btn = document.getElementById(`adm-tab-${t}`);
+                if (btn) {
+                    if (t === tab) {
+                        btn.className = "flex-1 py-3 px-4 text-center border-b-2 border-[#8B3A2B] text-[#8B3A2B] bg-white font-bold transition whitespace-nowrap";
+                    } else {
+                        btn.className = "flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition font-normal whitespace-nowrap";
+                    }
+                }
+            });
+            renderAdminContent();
+        }
+
+        function renderAdminContent() {
+            const content = document.getElementById('adminBodyContent');
+            if (!content) return;
+            content.innerHTML = '';
+
+            if (activeAdminTab === 'guisados') {
+                content.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-stone-800 text-sm">Guisados Disponibles Hoy</h4>
+                            <button onclick="addAdminGuisado()" class="bg-amber-100 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200 transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Agregar Guisado
+                            </button>
+                        </div>
+                        <p class="text-xs text-stone-500">Puedes marcar un guisado como "Agotado" para que no aparezca como opción al cliente sin necesidad de borrarlo.</p>
+                        <div id="adminGuisadosList" class="space-y-2 mt-3"></div>
+                    </div>
+                `;
+                renderAdminGuisadosList();
+            } else if (activeAdminTab === 'aguas') {
+                content.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-stone-800 text-sm">Aguas Frescas del Día</h4>
+                            <button onclick="addAdminAgua()" class="bg-amber-100 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200 transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Agregar Agua
+                            </button>
+                        </div>
+                        <p class="text-xs text-stone-500">Administra los sabores de agua fresca del día o márcalas como agotadas.</p>
+                        <div id="adminAguasList" class="space-y-2 mt-3"></div>
+                    </div>
+                `;
+                renderAdminAguasList();
+            } else if (activeAdminTab === 'refrescos') {
+                content.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-stone-800 text-sm">Refrescos Disponibles</h4>
+                            <button onclick="addAdminRefresco()" class="bg-amber-100 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200 transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Agregar Refresco
+                            </button>
+                        </div>
+                        <p class="text-xs text-stone-500">Gestiona las marcas/sabores de refrescos en existencia.</p>
+                        <div id="adminRefrescosList" class="space-y-2 mt-3"></div>
+                    </div>
+                `;
+                renderAdminRefrescosList();
+            } else if (activeAdminTab === 'menu') {
+                content.innerHTML = `
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-stone-800 text-sm">Precios y Platillos del Menú</h4>
+                        <p class="text-xs text-stone-500">Modifica los precios o nombres de tus platillos principales.</p>
+                        <div class="space-y-4" id="adminMenuCategories"></div>
+                    </div>
+                `;
+                renderAdminMenuEditor();
+            } else if (activeAdminTab === 'qr') {
+                content.innerHTML = `
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-stone-800 text-sm">Generador de Códigos QR por Mesa</h4>
+                        <p class="text-xs text-stone-500">Genera enlaces y códigos QR automáticos para cada mesa de tu restaurante. Al escanearlo, el menú asignará automáticamente la mesa.</p>
+                        <div class="flex gap-2 items-center bg-stone-50 p-3 rounded-xl border border-stone-200">
+                            <label class="text-xs font-bold text-stone-700">Número de Mesa:</label>
+                            <input type="number" id="qrTableNumInput" min="1" max="99" value="1" class="w-20 px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm font-bold text-center">
+                            <button onclick="generateTableQR()" class="bg-[#8B3A2B] hover:bg-[#722F22] text-white px-4 py-1.5 rounded-lg text-xs font-bold transition">Generar QR</button>
+                        </div>
+                        <div id="qrResultContainer" class="text-center p-6 bg-stone-50 border border-stone-200 rounded-xl space-y-3"></div>
+                    </div>
+                `;
+                generateTableQR(1);
+            } else if (activeAdminTab === 'settings') {
+                content.innerHTML = `
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-stone-800 text-sm">Configuración General y Seguridad</h4>
+                        <p class="text-xs text-stone-500">Actualiza el número de WhatsApp al que llegarán tus comandas y la contraseña de administrador.</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-stone-700 mb-1">Número de WhatsApp (Comandas)</label>
+                                <input type="text" id="adminWhatsAppInput" value="${storeData.whatsappNumber || ''}" placeholder="Ej. 5219851234567" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-stone-700 mb-1">Contraseña de Administrador</label>
+                                <input type="text" id="adminNewPassInput" value="${storeData.adminPassword || 'lili123'}" placeholder="Nueva contraseña" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderAdminGuisadosList() {
+            const list = document.getElementById('adminGuisadosList');
+            if (!list) return;
+            list.innerHTML = '';
+            storeData.dailyGuisados.forEach((guisado, index) => {
+                const row = document.createElement('div');
+                row.className = "flex items-center gap-2 bg-stone-50 p-2 rounded-xl border border-stone-200";
+                row.innerHTML = `
+                    <input type="text" value="${guisado.name}" onchange="updateGuisadoValue(${index}, this.value)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+                    <button onclick="toggleGuisadoAvailability(${index})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${guisado.available ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-rose-100 text-rose-800 hover:bg-rose-200'}">
+                        <i class="fa-solid ${guisado.available ? 'fa-check' : 'fa-ban'}"></i>
+                        <span>${guisado.available ? 'Disponible' : 'Agotado'}</span>
+                    </button>
+                    <button onclick="removeAdminGuisado(${index})" class="bg-stone-200 text-stone-600 hover:bg-rose-100 hover:text-rose-600 p-2 rounded-lg transition" title="Eliminar">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function updateGuisadoValue(index, val) {
+            storeData.dailyGuisados[index].name = val;
+        }
+
+        function toggleGuisadoAvailability(index) {
+            storeData.dailyGuisados[index].available = !storeData.dailyGuisados[index].available;
+            renderAdminGuisadosList();
+        }
+
+        function addAdminGuisado() {
+            storeData.dailyGuisados.push({ name: "Nuevo Guisado", available: true });
+            renderAdminGuisadosList();
+        }
+
+        function removeAdminGuisado(index) {
+            storeData.dailyGuisados.splice(index, 1);
+            renderAdminGuisadosList();
+        }
+
+        function renderAdminAguasList() {
+            const list = document.getElementById('adminAguasList');
+            if (!list) return;
+            list.innerHTML = '';
+            storeData.dailyAguas.forEach((agua, index) => {
+                const row = document.createElement('div');
+                row.className = "flex items-center gap-2 bg-stone-50 p-2 rounded-xl border border-stone-200";
+                row.innerHTML = `
+                    <input type="text" value="${agua.name}" onchange="updateAguaValue(${index}, this.value)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+                    <button onclick="toggleAguaAvailability(${index})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${agua.available ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-rose-100 text-rose-800 hover:bg-rose-200'}">
+                        <i class="fa-solid ${agua.available ? 'fa-check' : 'fa-ban'}"></i>
+                        <span>${agua.available ? 'Disponible' : 'Agotado'}</span>
+                    </button>
+                    <button onclick="removeAdminAgua(${index})" class="bg-stone-200 text-stone-600 hover:bg-rose-100 hover:text-rose-600 p-2 rounded-lg transition" title="Eliminar">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function updateAguaValue(index, val) {
+            storeData.dailyAguas[index].name = val;
+        }
+
+        function toggleAguaAvailability(index) {
+            storeData.dailyAguas[index].available = !storeData.dailyAguas[index].available;
+            renderAdminAguasList();
+        }
+
+        function addAdminAgua() {
+            storeData.dailyAguas.push({ name: "Nueva Agua", available: true });
+            renderAdminAguasList();
+        }
+
+        function removeAdminAgua(index) {
+            storeData.dailyAguas.splice(index, 1);
+            renderAdminAguasList();
+        }
+
+        function renderAdminRefrescosList() {
+            const list = document.getElementById('adminRefrescosList');
+            if (!list) return;
+            list.innerHTML = '';
+            storeData.dailyRefrescos.forEach((refresco, index) => {
+                const row = document.createElement('div');
+                row.className = "flex items-center gap-2 bg-stone-50 p-2 rounded-xl border border-stone-200";
+                row.innerHTML = `
+                    <input type="text" value="${refresco.name}" onchange="updateRefrescoValue(${index}, this.value)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+                    <button onclick="toggleRefrescoAvailability(${index})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${refresco.available ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-rose-100 text-rose-800 hover:bg-rose-200'}">
+                        <i class="fa-solid ${refresco.available ? 'fa-check' : 'fa-ban'}"></i>
+                        <span>${refresco.available ? 'Disponible' : 'Agotado'}</span>
+                    </button>
+                    <button onclick="removeAdminRefresco(${index})" class="bg-stone-200 text-stone-600 hover:bg-rose-100 hover:text-rose-600 p-2 rounded-lg transition" title="Eliminar">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function updateRefrescoValue(index, val) {
+            storeData.dailyRefrescos[index].name = val;
+        }
+
+        function toggleRefrescoAvailability(index) {
+            storeData.dailyRefrescos[index].available = !storeData.dailyRefrescos[index].available;
+            renderAdminRefrescosList();
+        }
+
+        function addAdminRefresco() {
+            storeData.dailyRefrescos.push({ name: "Nuevo Refresco", available: true });
+            renderAdminRefrescosList();
+        }
+
+        function removeAdminRefresco(index) {
+            storeData.dailyRefrescos.splice(index, 1);
+            renderAdminRefrescosList();
+        }
+    </script>
+</body>
+</html>
