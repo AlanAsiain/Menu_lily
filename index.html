@@ -483,8 +483,19 @@
             ]
         };
 
-        let storeData = JSON.parse(localStorage.getItem('cazuelas_store_data')) || DEFAULT_STORE_DATA;
-
+        let storeData = DEFAULT_STORE_DATA;
+        // Escucha cambios en la base de datos en tiempo real
+menuDocRef.onSnapshot((doc) => {
+    if (doc.exists) {
+        storeData = doc.data();
+        renderMenu();
+        if (document.getElementById('adminModal') && !document.getElementById('adminModal').classList.contains('hidden')) {
+            renderAdminContent();
+        }
+    } else {
+        menuDocRef.set(DEFAULT_STORE_DATA);
+    }
+});
         if (storeData.dailyGuisados && typeof storeData.dailyGuisados[0] === 'string') {
             storeData.dailyGuisados = storeData.dailyGuisados.map(g => ({ name: g, available: true }));
         }
@@ -831,7 +842,7 @@
         function saveData() {
     menuDocRef.set(storeData)
         .then(() => {
-            showToast("¡Menú actualizado en tiempo real!");
+            showToast("¡Menú actualizado en la nube!");
         })
         .catch((error) => {
             console.error("Error al guardar en Firestore: ", error);
@@ -1297,6 +1308,7 @@
 
         function toggleGuisadoAvailability(index) {
             storeData.dailyGuisados[index].available = !storeData.dailyGuisados[index].available;
+            saveData();
             renderAdminGuisadosList();
         }
 
