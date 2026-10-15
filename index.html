@@ -744,38 +744,92 @@ menuDocRef.onSnapshot((doc) => {
             if (modal) modal.classList.add('hidden');
         }
 
-        function renderAdminMenuEditor() {
+function renderAdminMenuEditor() {
             const container = document.getElementById('adminMenuCategories');
             if (!container) return;
             container.innerHTML = '';
 
             storeData.categories.forEach((cat, catIdx) => {
                 const catDiv = document.createElement('div');
-                catDiv.className = "space-y-2 border border-stone-200 p-3 rounded-xl bg-stone-50";
-                catDiv.innerHTML = `<h5 class="font-bold text-stone-800 text-xs uppercase tracking-wide border-b pb-1">${cat.name}</h5>`;
+                catDiv.className = "space-y-3 border border-stone-200 p-4 rounded-xl bg-stone-50 shadow-sm";
+                
+                // Cabecera de la categoría con botón para agregar platillo
+                catDiv.innerHTML = `
+                    <div class="flex items-center justify-between border-b pb-2">
+                        <h5 class="font-bold text-stone-800 text-sm uppercase tracking-wide text-[#8B3A2B]">${cat.name}</h5>
+                        <button onclick="addAdminMenuItem(${catIdx})" class="bg-amber-100 text-[#8B3A2B] px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-amber-200 transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Añadir Platillo
+                        </button>
+                    </div>
+                    <div class="space-y-3" id="cat-admin-items-${catIdx}"></div>
+                `;
+                container.appendChild(catDiv);
+
+                const itemsContainer = catDiv.querySelector(`#cat-admin-items-${catIdx}`);
 
                 cat.items.forEach((item, itemIdx) => {
                     const row = document.createElement('div');
-                    row.className = "flex items-center gap-2 bg-white p-2 rounded-lg border border-stone-200 text-xs";
+                    row.className = "bg-white p-3 rounded-xl border border-stone-200 space-y-2 text-xs shadow-sm";
                     row.innerHTML = `
-                        <input type="text" value="${item.name}" onchange="updateMenuItemName(${catIdx}, ${itemIdx}, this.value)" class="flex-grow px-2 py-1 border border-stone-300 rounded font-medium text-stone-800">
-                        <span class="font-bold text-stone-500">$</span>
-                        <input type="number" value="${item.price}" onchange="updateMenuItemPrice(${catIdx}, ${itemIdx}, this.value)" class="w-16 px-2 py-1 border border-stone-300 rounded font-bold text-center text-[#8B3A2B]">
+                        <div class="flex items-center gap-2">
+                            <input type="text" value="${item.name}" onchange="updateMenuItemProp(${catIdx}, ${itemIdx}, 'name', this.value)" placeholder="Nombre del platillo" class="flex-grow px-2.5 py-1.5 border border-stone-300 rounded-lg font-medium text-stone-800 focus:ring-1 focus:ring-[#8B3A2B]">
+                            <span class="font-bold text-stone-500">$</span>
+                            <input type="number" value="${item.price}" onchange="updateMenuItemProp(${catIdx}, ${itemIdx}, 'price', parseFloat(this.value)||0)" placeholder="Precio" class="w-20 px-2.5 py-1.5 border border-stone-300 rounded-lg font-bold text-center text-[#8B3A2B] focus:ring-1 focus:ring-[#8B3A2B]">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" value="${item.image || ''}" onchange="updateMenuItemProp(${catIdx}, ${itemIdx}, 'image', this.value)" placeholder="Enlace de la imagen (URL ej: https://...)" class="flex-grow px-2.5 py-1.5 border border-stone-300 rounded-lg text-stone-600 bg-stone-50 text-[11px]">
+                            
+                            <!-- Botones para subir/bajar de orden -->
+                            <div class="flex items-center gap-1">
+                                ${itemIdx > 0 ? `<button onclick="moveMenuItem(${catIdx},${itemIdx}, 'up')" title="Mover arriba" class="p-1.5 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded transition"><i class="fa-solid fa-arrow-up text-xs"></i></button>` : ''}
+                                ${itemIdx < cat.items.length - 1 ? `<button onclick="moveMenuItem(${catIdx},${itemIdx}, 'down')" title="Mover abajo" class="p-1.5 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded transition"><i class="fa-solid fa-arrow-down text-xs"></i></button>` : ''}
+                                <button onclick="removeAdminMenuItem(${catIdx}, ${itemIdx})" title="Eliminar platillo" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded transition ml-1"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                            </div>
+                        </div>
                     `;
-                    catDiv.appendChild(row);
+                    itemsContainer.appendChild(row);
                 });
-                container.appendChild(catDiv);
             });
         }
 
-        function updateMenuItemName(catIdx, itemIdx, val) {
-            storeData.categories[catIdx].items[itemIdx].name = val;
+        function updateMenuItemProp(catIdx, itemIdx, prop, val) {
+            storeData.categories[catIdx].items[itemIdx][prop] = val;
+            saveData();
         }
 
-        function updateMenuItemPrice(catIdx, itemIdx, val) {
-            storeData.categories[catIdx].items[itemIdx].price = parseFloat(val) || 0;
+        function addAdminMenuItem(catIdx) {
+            const newItem = {
+                id: "item_" + Date.now(),
+                name: "Nuevo Platillo",
+                description: "Delicioso platillo casero.",
+                price: 90,
+                image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Nuevo+Platillo"
+            };
+            storeData.categories[catIdx].items.push(newItem);
+            saveData();
+            renderAdminMenuEditor();
         }
 
+        function removeAdminMenuItem(catIdx, itemIdx) {
+            if (confirm("¿Estás seguro de eliminar este platillo?")) {
+                storeData.categories[catIdx].items.splice(itemIdx, 1);
+                saveData();
+                renderAdminMenuEditor();
+            }
+        }
+
+        function moveMenuItem(catIdx, itemIdx, direction) {
+            const items = storeData.categories[catIdx].items;
+            const targetIndex = direction === 'up' ? itemIdx - 1 : itemIdx + 1;
+            
+            if (targetIndex >= 0 && targetIndex < items.length) {
+                const temp = items[itemIdx];
+                items[itemIdx] = items[targetIndex];
+                items[targetIndex] = temp;
+                saveData();
+                renderAdminMenuEditor();
+            }
+        }
         function generateTableQR(num) {
             const inputVal = num || document.getElementById('qrTableNumInput')?.value || 1;
             const container = document.getElementById('qrResultContainer');
