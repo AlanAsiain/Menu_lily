@@ -90,7 +90,7 @@
             justify-content: center;
             box-shadow: -4px 4px 10px rgba(139, 58, 43, 0.2);
             cursor: pointer;
-            z-index: 10;
+            z-index: -1;
         }
     </style>
 </head>
@@ -1512,8 +1512,8 @@ function renderAdminMenuEditor() {
             if (modal) modal.classList.add('hidden');
         }
         </script>
-    <script>
-        // Animación dinámica de la pestaña lateral de "+" según la posición en pantalla
+   <script>
+        // Animación dinámica: escondido por defecto, sale hacia la izquierda al llegar al centro
         window.addEventListener('scroll', () => {
             const cards = document.querySelectorAll('.menu-item-card');
             const windowCenter = window.innerHeight / 2;
@@ -1527,10 +1527,12 @@ function renderAdminMenuEditor() {
 
                 const distance = Math.abs(windowCenter - cardCenter);
 
+                // Si está cerca del centro de la pantalla, sale por completo por la izquierda (-100%)
                 if (distance < 130) {
-                    tab.style.transform = 'translateY(-50%) translateX(0)';
-                } else {
                     tab.style.transform = 'translateY(-50%) translateX(-100%)';
+                } else {
+                    // Si está lejos del centro, se esconde detrás del recuadro (0)
+                    tab.style.transform = 'translateY(-50%) translateX(0)';
                 }
             });
         });
