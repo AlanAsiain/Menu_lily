@@ -859,7 +859,41 @@ function renderAdminMenuEditor() {
                 </div>
             `;
         }
+        // Funciones para el Zoom de imágenes
+        function openImageZoom(imgSrc, imgTitle) {
+            const modal = document.getElementById('imageZoomModal');
+            const imgEl = document.getElementById('zoomedImageElement');
+            const titleEl = document.getElementById('zoomedImageTitle');
+            if (!modal || !imgEl) return;
+            imgEl.src = imgSrc;
+            titleEl.textContent = imgTitle;
+            modal.classList.remove('hidden');
+        }
 
+        function closeImageZoom() {
+            const modal = document.getElementById('imageZoomModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // Animación dinámica de la pestaña lateral de "+" según la posición en pantalla
+        window.addEventListener('scroll', () => {
+            const cards = document.querySelectorAll('.menu-item-card');
+            const windowCenter = window.innerHeight / 2;
+
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.top + (rect.height / 2);
+                const tab = card.querySelector('.slide-tab');
+
+                if (!tab) return;
+
+                const distance = Math.abs(windowCenter - cardCenter);
+                if (distance < 140) {
+                    tab.style.transform = 'translateY(-50%) translateX(0)';
+                } else {
+                    tab.style.transform = 'translateY(-50%) translateX(-100%)';
+        }
+                
         function saveAdminChanges() {
             const waInput = document.getElementById('adminWhatsAppInput');
             const passInput = document.getElementById('adminNewPassInput');
@@ -1470,5 +1504,8 @@ function renderAdminMenuEditor() {
             storeData.dailyRefrescos.splice(index, 1);
             renderAdminRefrescosList();
         }
+            });
+        });
+    </script>
 </body>
 </html>
