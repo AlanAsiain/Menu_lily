@@ -9,6 +9,8 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Playfair Display for rustic elegance, Inter for clean UI -->
+     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -354,6 +356,13 @@
 
     <!-- JavaScript Application Logic -->
     <script>
+        // 1. Inicializa Firebase con tu ID de Proyecto
+        const firebaseConfig = {
+            projectId: "menu-lily" 
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const menuDocRef = db.collection("config").doc("storeData");
         const DEFAULT_STORE_DATA = {
             whatsappNumber: "5219850000000",
             adminPassword: "lili123",
@@ -820,9 +829,16 @@
             }
         });
 
-        function saveData() {
-            localStorage.setItem('cazuelas_store_data', JSON.stringify(storeData));
-        }
+function saveData() {
+    menuDocRef.set(storeData)
+        .then(() => {
+            showToast("¡Menú actualizado en tiempo real!");
+        })
+        .catch((error) => {
+            console.error("Error al guardar en Firestore: ", error);
+            showToast("Error al sincronizar en la nube", "error");
+        });
+}
 
         function saveCart() {
             localStorage.setItem('cazuelas_cart', JSON.stringify(cart));
