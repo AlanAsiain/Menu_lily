@@ -564,19 +564,12 @@ menuDocRef.onSnapshot((doc) => {
             closeTableModal();
             showToast(`Mesa ${currentTable} asignada con éxito`);
         }
-
         function saveTableNumber() {
             if (!currentTable) {
                 showToast("Por favor selecciona una mesa de los botones", "error");
                 return;
             }
             closeTableModal();
-            }
-            currentTable = tableInput.value;
-            localStorage.setItem('cazuelas_table', currentTable);
-            updateTableUI();
-            closeTableModal();
-            showToast(`Mesa ${currentTable} asignada con éxito`);
         }
 
         function buildQuickTableButtons() {
