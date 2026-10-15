@@ -624,11 +624,16 @@ menuDocRef.onSnapshot((doc) => {
 
                 filteredItems.forEach(item => {
                     const card = document.createElement('div');
-                    card.className = "rustic-card rounded-2xl p-4 flex gap-4 items-center justify-between shadow-sm cursor-pointer hover:shadow-md transition";
+                    card.className = "rustic-card rounded-2xl p-4 flex gap-4 items-center justify-between shadow-sm cursor-pointer hover:shadow-md transition relative overflow-hidden menu-item-card";
                     card.onclick = () => handleItemClick(item.id);
 
                     card.innerHTML = `
-                        <div class="flex-grow space-y-1.5">
+                        <!-- Pestaña lateral deslizante con el símbolo + -->
+                        <div class="absolute left-0 top-1/2 -transform translate-y-1/2 -translate-x-full slide-tab bg-[#8B3A2B] text-white w-10 h-16 rounded-r-xl flex items-center justify-center shadow-lg transition-transform duration-300 z-10">
+                            <i class="fa-solid fa-plus text-base font-bold"></i>
+                        </div>
+
+                        <div class="flex-grow space-y-1.5 pl-2">
                             <h3 class="font-bold text-stone-800 text-sm sm:text-base leading-tight">${item.name}</h3>
                             <p class="text-xs text-stone-500 line-clamp-2">${item.description}</p>
                             <div class="flex items-center gap-2 pt-1">
@@ -637,10 +642,7 @@ menuDocRef.onSnapshot((doc) => {
                             </div>
                         </div>
                         <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-stone-100 flex-shrink-0 border border-[#E7D7C1]">
-                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/120x120/8B3A2B/F4EADB?text=Lili'">
-                            <button onclick="event.stopPropagation(); handleItemClick('${item.id}')" class="absolute bottom-2 right-2 bg-[#8B3A2B] text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:bg-[#722F22] transition">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                            </button>
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover transition transform hover:scale-105" onclick="event.stopPropagation(); openImageZoom('${item.image}', '${item.name}')" title="Haz clic para ver en grande">
                         </div>
                     `;
                     itemsGrid.appendChild(card);
@@ -1459,6 +1461,58 @@ function renderAdminMenuEditor() {
             storeData.dailyRefrescos.splice(index, 1);
             renderAdminRefrescosList();
         }
+        <!-- MODAL DE ZOOM PARA IMÁGENES -->
+        <div id="imageZoomModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 hidden backdrop-blur-md" onclick="closeImageZoom()">
+        <div class="relative max-w-2xl w-full max-h-[90vh] flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="closeImageZoom()" class="absolute -top-10 right-0 w-8 h-8 rounded-full bg-white text-stone-800 flex items-center justify-center font-bold shadow-lg hover:bg-stone-200 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="zoomedImageElement" src="" alt="Zoom" class="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl border-4 border-white">
+            <h4 id="zoomedImageTitle" class="text-white font-serif font-bold text-lg mt-3 text-center"></h4>
+        </div>
+    </div>
+
+    <script>
+        // Funciones para el Zoom de imágenes
+        function openImageZoom(imgSrc, imgTitle) {
+            const modal = document.getElementById('imageZoomModal');
+            const imgEl = document.getElementById('zoomedImageElement');
+            const titleEl = document.getElementById('zoomedImageTitle');
+            if (!modal || !imgEl) return;
+            imgEl.src = imgSrc;
+            titleEl.textContent = imgTitle;
+            modal.classList.remove('hidden');
+        }
+
+        function closeImageZoom() {
+            const modal = document.getElementById('imageZoomModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // Animación dinámica de la pestaña lateral de "+" según la posición en pantalla
+        window.addEventListener('scroll', () => {
+            const cards = document.querySelectorAll('.menu-item-card');
+            const windowCenter = window.innerHeight / 2;
+
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.top + (rect.height / 2);
+                const tab = card.querySelector('.slide-tab');
+
+                if (!tab) return;
+
+                // Distancia entre el centro del platillo y el centro de la pantalla
+                const distance = Math.abs(windowCenter - cardCenter);
+
+                if (distance < 140) {
+                    // Se acerca al centro: la pestaña sale por completo (translate-x-0)
+                    tab.style.transform = 'translateY(-50%) translateX(0)';
+                } else {
+                    // Está lejos del centro: se esconde hacia la izquierda (-translate-x-full)
+                    tab.style.transform = 'translateY(-50%) translateX(-100%)';
+                }
+            });
+        });
     </script>
 </body>
 </html>
