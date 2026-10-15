@@ -142,27 +142,27 @@
     </main>
 
     <!-- Sticky Floating Cart / Order Bar -->
-    <div id="cartBar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E7D7C1] shadow-2xl p-4 z-20 transition-transform transform translate-y-full duration-300">
+    <div id="cartBar" class="fixed bottom-0 left-0 right-0 bg-[#8B3A2B] border-t border-[#D97706] shadow-2xl p-4 z-20 transition-transform transform translate-y-full duration-300">
         <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-[#8B3A2B] text-amber-100 rounded-xl flex items-center justify-center font-bold text-lg shadow-md relative">
+                <div class="w-12 h-12 bg-[#F4EADB] text-[#8B3A2B] rounded-xl flex items-center justify-center font-bold text-lg shadow-md relative">
                     <i class="fa-solid fa-basket-shopping"></i>
-                    <span id="cartCountBadge" class="absolute -top-2 -right-2 bg-[#D97706] text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold border-2 border-white">0</span>
+                    <span id="cartCountBadge" class="absolute -top-2 -right-2 bg-[#D97706] text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold border-2 border-[#8B3A2B]">0</span>
                 </div>
                 <div>
-                    <h4 class="font-bold text-stone-800 text-sm sm:text-base">Tu Comanda Actual</h4>
-                    <p class="text-xs text-stone-500">Mesa: <span id="cartTableSummary" class="font-semibold text-[#8B3A2B]">No asignada</span></p>
+                    <h4 class="font-bold text-white text-sm sm:text-base">Tu Comanda Actual</h4>
+                    <p class="text-xs text-amber-200">Mesa: <span id="cartTableSummary" class="font-semibold text-white">No asignada</span></p>
                 </div>
             </div>
 
             <div class="flex items-center gap-4">
                 <div class="text-right">
-                    <span class="text-xs text-stone-500 block">Total estimado</span>
-                    <span id="cartTotalSummary" class="text-lg sm:text-xl font-black text-[#8B3A2B]">$0.00</span>
+                    <span class="text-xs text-amber-200 block">Total estimado</span>
+                    <span id="cartTotalSummary" class="text-lg sm:text-xl font-black text-amber-300">$0.00</span>
                 </div>
-                <button onclick="openCartModal()" class="bg-gradient-to-r from-[#8B3A2B] to-[#A0402E] hover:from-[#722F22] hover:to-[#8B3A2B] text-white font-bold px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm sm:text-base transition transform active:scale-95">
+                <button onclick="openCartModal()" class="bg-[#F4EADB] hover:bg-amber-100 text-[#8B3A2B] font-bold px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm sm:text-base transition transform active:scale-95">
                     <span>Ver Pedido</span>
-                    <i class="fa-solid fa-arrow-right"></i>
+                    <i class="fa-solid fa-arrow-right text-[#8B3A2B]"></i>
                 </button>
             </div>
         </div>
