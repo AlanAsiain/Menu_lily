@@ -52,6 +52,7 @@
             background: #ffffff;
             border: 1px solid #E7D7C1;
             transition: all 0.2s ease-in-out;
+            margin-left: 45px; /* Deja espacio a la izquierda para que la pestaña no se corte en celular */
         }
         .rustic-card:hover {
             border-color: #D97706;
@@ -650,8 +651,7 @@ menuDocRef.onSnapshot((doc) => {
                             <p class="text-xs text-stone-500">${cat.description}</p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cat-items-${cat.id}"></div>
-                `;
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4" id="cat-items-${cat.id}"></div>                `;
 
                 container.appendChild(section);
 
