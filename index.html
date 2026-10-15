@@ -1174,6 +1174,14 @@ menuDocRef.onSnapshot((doc) => {
             const whatsappURL = `https://wa.me/${phone}?text=${encodedMessage}`;
 
             window.open(whatsappURL, '_blank');
+            cart = [];
+            localStorage.removeItem('cazuelas_cart');
+            localStorage.removeItem('cazuelas_table');
+            currentTable = null;
+            updateCartUI();
+            updateTableUI();
+            openTableModal();
+
         }
 
         function switchAdminTab(tab) {
