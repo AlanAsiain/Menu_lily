@@ -69,7 +69,7 @@
             background: #D97706;
             border-radius: 3px;
         }
-        /* Estilos para la pestaña lateral deslizante de "+" */
+       /* Estilos para la pestaña lateral deslizante de "+" */
         .menu-item-card {
             position: relative;
             overflow: visible !important;
@@ -79,19 +79,25 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%) translateX(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background-color: #8B3A2B;
-            color: #ffffff;
-            width: 36px;
-            height: 56px;
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, color 0.2s;
+            background-color: #F4EADB;
+            color: #8B3A2B;
+            border: 2px solid #E7D7C1;
+            width: 38px;
+            height: 58px;
+            border-top-left-radius: 14px;
+            border-bottom-left-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: -4px 4px 10px rgba(139, 58, 43, 0.2);
+            box-shadow: -4px 4px 10px rgba(139, 58, 43, 0.15);
             cursor: pointer;
-            z-index: -1;
+            z-index: 10;
+        }
+        .slide-tab:hover {
+            background-color: #8B3A2B;
+            color: #ffffff;
+            border-color: #8B3A2B;
         }
     </style>
 </head>
@@ -715,22 +721,33 @@ menuDocRef.onSnapshot((doc) => {
                 guisadosSection.className = "mb-8 bg-[#8B3A2B] rounded-3xl p-5 sm:p-6 shadow-xl border-2 border-[#D97706]";
                 
                 let cardsHtml = '';
+                const availableGuisados = (storeData.dailyGuisados || []).filter(g => g.available);
+            if (availableGuisados.length > 0) {
+                const guisadosSection = document.createElement('div');
+                guisadosSection.className = "mb-8 bg-[#8B3A2B] rounded-3xl p-5 sm:p-6 shadow-xl border-2 border-[#D97706]";
+                
+                let cardsHtml = '';
                 availableGuisados.forEach(g => {
                     const imgSrc = g.image || 'https://placehold.co/400x300/8B3A2B/F4EADB?text=Guisado';
                     const ingText = (g.ingredients || '').replace(/'/g, "\\'");
                     
                     cardsHtml += `
-                        <div class="w-[320px] sm:w-[350px] h-[150px] bg-white rounded-2xl flex items-stretch justify-between shadow-md border border-[#E7D7C1] overflow-hidden flex-shrink-0">
-                            <!-- Contenido de Texto (Lado Izquierdo) -->
-                            <div class="p-4 flex flex-col justify-between flex-grow h-full">
-                                <h3 class="font-serif font-black text-base sm:text-lg text-[#8B3A2B] leading-tight line-clamp-2">${g.name}</h3>
-                                <button onclick="openIngredientsModal('${g.name}', '${ingText}')" class="mt-2 text-left w-fit bg-[#F4EADB] hover:bg-amber-200 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm border border-amber-300">
+                        <div class="rustic-card w-[320px] sm:w-[350px] h-[150px] bg-white rounded-2xl flex items-stretch justify-between shadow-md border border-[#E7D7C1] overflow-hidden flex-shrink-0 menu-item-card cursor-pointer" onclick="handleItemByGuisadoName('${g.name}')">
+                            <!-- Pestaña lateral deslizante con el símbolo + -->
+                            <div class="slide-tab" onclick="event.stopPropagation(); handleItemByGuisadoName('${g.name}');">
+                                <i class="fa-solid fa-plus text-sm font-bold pointer-events-none"></i>
+                            </div>
+
+                            <!-- Contenido de Texto (Lado Izquierdo - Centrado y más grande) -->
+                            <div class="p-4 flex flex-col justify-center items-start flex-grow h-full space-y-2.5 pl-3">
+                                <h3 class="font-serif font-black text-lg sm:text-xl text-[#8B3A2B] leading-tight line-clamp-2">${g.name}</h3>
+                                <button onclick="event.stopPropagation(); openIngredientsModal('${g.name}', '${ingText}')" class="text-left w-fit bg-[#F4EADB] hover:bg-amber-200 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm border border-amber-300">
                                     <i class="fa-solid fa-list-check text-xs"></i>
                                     <span>Ver ingredientes</span>
                                 </button>
                             </div>
                             <!-- Imagen en todo el lateral derecho (sin marco) -->
-                            <div class="w-[130px] sm:w-[150px] h-full flex-shrink-0 relative overflow-hidden cursor-pointer" onclick="openImageZoom('${imgSrc}', '${g.name}')" title="Ver foto en grande">
+                            <div class="w-[130px] sm:w-[150px] h-full flex-shrink-0 relative overflow-hidden cursor-pointer" onclick="event.stopPropagation(); openImageZoom('${imgSrc}', '${g.name}')" title="Ver foto en grande">
                                 <img src="${imgSrc}" alt="${g.name}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
                             </div>
                         </div>
@@ -1351,7 +1368,7 @@ function renderAdminMenuEditor() {
                     if (item.customizations.salsa && item.customizations.proteina) {
                         customText += `<div class="text-[11px] text-[#8B3A2B] font-medium"><i class="fa-solid fa-pepper-hot mr-1"></i> Opción: ${item.customizations.salsa} con ${item.customizations.proteina}</div>`;
                     }
-                    if (item.customizations.guisados) {
+                    if (item.customizations.guisados && item.customizations.guisados.length > 0) {
                         customText += `<div class="text-[11px] text-[#8B3A2B] font-medium"><i class="fa-solid fa-bowl-food mr-1"></i> Guisados: ${item.customizations.guisados.join(', ')}</div>`;
                     }
                     if (item.customizations.agua) {
