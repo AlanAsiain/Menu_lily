@@ -236,7 +236,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- ADMIN LOGIN PASSWORD MODAL -->
     <div id="adminLoginModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-[#E7D7C1] animate-in fade-in zoom-in duration-200">
@@ -1125,7 +1125,7 @@ function renderAdminMenuEditor() {
                 refrescosDiv.innerHTML = `<label class="block text-xs font-bold text-stone-700 uppercase tracking-wide">Selecciona el refresco:</label>`;
 
                 const select = document.createElement('select');
-                <select id="refresco-select-main" onchange="this.className = this.value ? 'w-full px-3 py-2.5 bg-[#F4EADB] border border-[#E7D7C1] rounded-xl text-sm text-[#8B3A2B] font-bold' : 'w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium'" class="w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium">                
+                select.id = "refresco-select-main";
                 select.className = "w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]";
                 
                 const defaultOpt = document.createElement('option');
@@ -1155,16 +1155,16 @@ function renderAdminMenuEditor() {
                 optsDiv.innerHTML = `
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-stone-700 uppercase tracking-wide">1. Selecciona el tipo de salsa:</label>
-                        <select id="salsa-select-opt" onchange="this.className = this.value ? 'w-full px-3 py-2.5 bg-[#F4EADB] border border-[#E7D7C1] rounded-xl text-sm text-[#8B3A2B] font-bold' : 'w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium'" class="w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium">                            
-                        <option value="">-- Elige la salsa --</option>
+                        <select id="salsa-select-opt" class="w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium" focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+                            <option value="">-- Elige la salsa --</option>
                             <option value="Salsa Verde">Salsa Verde</option>
                             <option value="Salsa Roja">Salsa Roja</option>
                         </select>
                     </div>
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-stone-700 uppercase tracking-wide">2. Selecciona tu complemento / proteína:</label>
-                        <select id="proteina-select-opt" onchange="this.className = this.value ? 'w-full px-3 py-2.5 bg-[#F4EADB] border border-[#E7D7C1] rounded-xl text-sm text-[#8B3A2B] font-bold' : 'w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium'" class="w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium">                            
-                        <option value="">-- Elige el acompañamiento --</option>
+                        <select id="proteina-select-opt" class="w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium" focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
+                            <option value="">-- Elige el acompañamiento --</option>
                             <option value="Pollo">Con Pollo</option>
                             <option value="Huevo">Con Huevo</option>
                         </select>
@@ -1189,7 +1189,8 @@ function renderAdminMenuEditor() {
                 } else {
                     for (let i = 0; i < count; i++) {
                         const select = document.createElement('select');
-                        <select onchange="this.className = this.value ? 'guisado-select w-full px-3 py-2.5 bg-[#F4EADB] border border-[#E7D7C1] rounded-xl text-sm text-[#8B3A2B] font-bold mb-2' : 'guisado-select w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium mb-2'" class="guisado-select w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium mb-2">                        
+                        select.className = "guisado-select w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]";
+                        
                         const defaultOpt = document.createElement('option');
                         defaultOpt.value = "";
                         defaultOpt.textContent = `-- Elige el guisado #${i + 1} --`;
@@ -1214,7 +1215,7 @@ function renderAdminMenuEditor() {
                 aguasDiv.innerHTML = `<label class="block text-xs font-bold text-stone-700 uppercase tracking-wide">Selecciona el sabor de tu agua fresca (${item.aguaSize || '500ml'}):</label>`;
 
                 const select = document.createElement('select');
-                <select id="agua-select-main" onchange="this.className = this.value ? 'w-full px-3 py-2.5 bg-[#F4EADB] border border-[#E7D7C1] rounded-xl text-sm text-[#8B3A2B] font-bold' : 'w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium'" class="w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium">                
+                select.id = "agua-select-main";
                 select.className = "w-full px-3 py-2.5 bg-[#8B3A2B] border border-[#8B3A2B] rounded-xl text-sm text-white font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]";
                 
                 const defaultOpt = document.createElement('option');
