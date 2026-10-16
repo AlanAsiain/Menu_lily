@@ -1431,54 +1431,7 @@ function renderAdminMenuEditor() {
                     </div>`;
             }
         }
-
-        function renderAdminGuisadosList() {
-            const list = document.getElementById('adminGuisadosList');
-            if (!list) return;
-            list.innerHTML = '';
-            storeData.dailyGuisados.forEach((guisado, index) => {
-                const row = document.createElement('div');
-                row.className = "flex items-center gap-2 bg-stone-50 p-2 rounded-xl border border-stone-200";
-                row.innerHTML = `
-                    <input type="text" value="${guisado.name}" onchange="updateGuisadoValue(${index}, this.value)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
-                    <button onclick="toggleGuisadoAvailability(${index})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${guisado.available ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-rose-100 text-rose-800 hover:bg-rose-200'}">
-                        <i class="fa-solid ${guisado.available ? 'fa-check' : 'fa-ban'}"></i>
-                        <span>${guisado.available ? 'Disponible' : 'Agotado'}</span>
-                    </button>
-                    <button onclick="removeAdminGuisado(${index})" class="bg-stone-200 text-stone-600 hover:bg-rose-100 hover:text-rose-600 p-2 rounded-lg transition" title="Eliminar">
-                        <i class="fa-solid fa-trash-can text-xs"></i>
-                    </button>
-                `;
-                list.appendChild(row);
-            });
-        }
-
-        function updateGuisadoValue(index, val) {
-            storeData.dailyGuisados[index].name = val;
-        }
-
-        function toggleGuisadoAvailability(index) {
-            storeData.dailyGuisados[index].available = !storeData.dailyGuisados[index].available;
-            saveData();
-            renderAdminGuisadosList();
-        }
-
-        function addAdminGuisado() { 
-            storeData.dailyGuisados.push({ 
-                name: "Nuevo Guisado", 
-                ingredients: "Ingredientes del guisado...", 
-                image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Guisado", 
-                available: true 
-            }); 
-            saveData(); 
-            renderAdminList('guisados'); 
-        }
-
-        function removeAdminGuisado(index) {
-            storeData.dailyGuisados.splice(index, 1);
-            renderAdminGuisadosList();
-        }
-
+        
         function renderAdminAguasList() {
             const list = document.getElementById('adminAguasList');
             if (!list) return;
@@ -1583,7 +1536,7 @@ function renderAdminMenuEditor() {
             if (modal) modal.classList.add('hidden');
         }
         </script>
-   <script>
+<script>
         // Animación dinámica: escondido por defecto, sale hacia la izquierda al llegar al centro
         window.addEventListener('scroll', () => {
             const cards = document.querySelectorAll('.menu-item-card');
@@ -1598,14 +1551,16 @@ function renderAdminMenuEditor() {
 
                 const distance = Math.abs(windowCenter - cardCenter);
 
-                // Si está cerca del centro de la pantalla, sale por completo por la izquierda (-100%)
                 if (distance < 130) {
                     tab.style.transform = 'translateY(-50%) translateX(-100%)';
                 } else {
-                    // Si está lejos del centro, se esconde detrás del recuadro (0)
                     tab.style.transform = 'translateY(-50%) translateX(0)';
                 }
-                function renderAdminList(type) {
+            });
+        });
+
+        // Funciones del Administrador para Guisados (Ingredientes, Fotos, Orden)
+        function renderAdminList(type) {
             const listId = type === 'guisados' ? 'adminGuisadosList' : type === 'aguas' ? 'adminAguasList' : 'adminRefrescosList';
             const list = document.getElementById(listId);
             if (!list) return;
@@ -1619,13 +1574,13 @@ function renderAdminMenuEditor() {
                 if (type === 'guisados') {
                     row.innerHTML = `
                         <div class="flex items-center gap-2">
-                            <input type="text" value="${item.name}" onchange="updateArrayProp('guisados', ${index}, 'name', this.value)" placeholder="Nombre del guisado" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm font-bold text-stone-800">
+                            <input type="text" value="${item.name || ''}" onchange="updateArrayProp('guisados', ${index}, 'name', this.value)" placeholder="Nombre del guisado" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm font-bold text-stone-800">
                             <button onclick="toggleArrayAvailability('${type}', ${index})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${item.available ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
                                 <i class="fa-solid ${item.available ? 'fa-check' : 'fa-ban'}"></i> <span>${item.available ? 'Disponible' : 'Agotado'}</span>
                             </button>
                         </div>
                         <div>
-                            <input type="text" value="${item.ingredients || ''}" onchange="updateArrayProp('guisados', ${index}, 'ingredients', this.value)" placeholder="Ingredientes (Ej. Cerdo, achiote, naranja agria, cebolla morada...)" class="w-full px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-xs text-stone-600">
+                            <input type="text" value="${item.ingredients || ''}" onchange="updateArrayProp('guisados', ${index}, 'ingredients', this.value)" placeholder="Ingredientes (Ej. Cerdo, achiote, naranja agria...)" class="w-full px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-xs text-stone-600">
                         </div>
                         <div class="flex items-center justify-between gap-2">
                             <input type="text" value="${item.image || ''}" onchange="updateArrayProp('guisados', ${index}, 'image', this.value)" placeholder="Enlace de la imagen (URL)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-xs text-stone-600">
@@ -1639,7 +1594,7 @@ function renderAdminMenuEditor() {
                 } else {
                     row.innerHTML = `
                         <div class="flex items-center gap-2">
-                            <input type="text" value="${item.name}" onchange="updateArrayProp('${type}', ${index}, 'name', this.value)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm text-stone-800">
+                            <input type="text" value="${item.name || ''}" onchange="updateArrayProp('${type}', ${index}, 'name', this.value)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm text-stone-800">
                             <button onclick="toggleArrayAvailability('${type}', ${index})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${item.available ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
                                 <i class="fa-solid ${item.available ? 'fa-check' : 'fa-ban'}"></i> <span>${item.available ? 'Disponible' : 'Agotado'}</span>
                             </button>
@@ -1650,7 +1605,8 @@ function renderAdminMenuEditor() {
                 list.appendChild(row);
             });
         }
-                function updateArrayProp(type, index, prop, val) {
+
+        function updateArrayProp(type, index, prop, val) {
             const array = type === 'guisados' ? storeData.dailyGuisados : type === 'aguas' ? storeData.dailyAguas : storeData.dailyRefrescos;
             if (array[index]) {
                 array[index][prop] = val;
@@ -1669,9 +1625,33 @@ function renderAdminMenuEditor() {
                 renderAdminList(type);
             }
         }
-            });
-        });
-       
+
+        function addAdminGuisado() { 
+            storeData.dailyGuisados.push({ 
+                name: "Nuevo Guisado", 
+                ingredients: "Ingredientes del guisado...", 
+                image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Guisado", 
+                available: true 
+            }); 
+            saveData(); 
+            renderAdminList('guisados'); 
+        }
+
+        function removeArrayItem(type, index) {
+            const array = type === 'guisados' ? storeData.dailyGuisados : type === 'aguas' ? storeData.dailyAguas : storeData.dailyRefrescos;
+            array.splice(index, 1);
+            saveData();
+            renderAdminList(type);
+        }
+
+        function toggleArrayAvailability(type, index) {
+            const array = type === 'guisados' ? storeData.dailyGuisados : type === 'aguas' ? storeData.dailyAguas : storeData.dailyRefrescos;
+            if (array[index]) {
+                array[index].available = !array[index].available;
+                saveData();
+                renderAdminList(type);
+            }
+        }
     </script>
 </body>
 </html>
