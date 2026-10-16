@@ -371,7 +371,30 @@
         <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
         <span id="toastMessage">Platillo agregado al pedido</span>
     </div>
-
+    
+    <!-- MODAL DE INGREDIENTES DE GUISADOS -->
+    <div id="ingredientsModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm" onclick="closeIngredientsModal()">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#E7D7C1] relative" onclick="event.stopPropagation()">
+            <button onclick="closeIngredientsModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-stone-100 text-stone-600 hover:bg-stone-200 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#8B3A2B] text-amber-100 flex items-center justify-center text-xl font-bold shadow-sm">
+                    <i class="fa-solid fa-[#8B3A2B]"></i>
+                    <i class="fa-solid fa-mortar-pestle"></i>
+                </div>
+                <div>
+                    <h3 id="ingredientsTitle" class="font-serif font-bold text-xl text-[#8B3A2B]">Ingredientes</h3>
+                    <p class="text-xs text-stone-500">Detalles de preparación e ingredientes</p>
+                </div>
+            </div>
+            <div class="p-4 bg-[#F4EADB] rounded-xl border border-[#E7D7C1]">
+                <p id="ingredientsText" class="text-sm text-stone-700 leading-relaxed font-medium"></p>
+            </div>
+            <button onclick="closeIngredientsModal()" class="w-full mt-4 bg-[#8B3A2B] text-white py-2.5 rounded-xl font-bold text-sm shadow hover:bg-[#722F22] transition">Entendido</button>
+        </div>
+    </div>
+    
     <!-- MODAL DE ZOOM PARA IMÁGENES -->
     <div id="imageZoomModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 hidden backdrop-blur-md" onclick="closeImageZoom()">
         <div class="relative max-w-2xl w-full max-h-[90vh] flex flex-col items-center" onclick="event.stopPropagation()">
@@ -627,6 +650,56 @@ menuDocRef.onSnapshot((doc) => {
             const container = document.getElementById('menuContainer');
             if (!container) return;
             container.innerHTML = '';
+            // 1. DIBUJAR SECCIÓN DESTACADA: GUISADOS DEL DÍA
+            const availableGuisados = (storeData.dailyGuisados || []).filter(g => g.available);
+            if (availableGuisados.length > 0) {
+                const guisadosSection = document.createElement('div');
+                guisadosSection.className = "mb-10 bg-[#8B3A2B] rounded-3xl p-5 sm:p-6 shadow-xl border-2 border-[#D97706]";
+                
+                let cardsHtml = '';
+                availableGuisados.forEach(g => {
+                    const imgSrc = g.image || 'https://placehold.co/400x300/8B3A2B/F4EADB?text=Guisado';
+                    const ingText = (g.ingredients || '').replace(/'/g, "\\'");
+                    
+                    cardsHtml += `
+                        <div class="bg-white rounded-2xl p-4 flex items-center justify-between gap-3 shadow-md border border-[#E7D7C1]">
+                            <div class="flex flex-col justify-between h-full py-1">
+                                <h3 class="font-serif font-black text-lg sm:text-xl text-[#8B3A2B] leading-tight">${g.name}</h3>
+                                <button onclick="openIngredientsModal('${g.name}', '${ingText}')" class="mt-3 text-left w-fit bg-[#F4EADB] hover:bg-amber-200 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm border border-amber-300">
+                                    <i class="fa-solid fa-list-check text-xs"></i>
+                                    <span>Ver ingredientes</span>
+                                </button>
+                            </div>
+                            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 border-2 border-[#E7D7C1]">
+                                <img src="${imgSrc}" alt="${g.name}" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition" onclick="openImageZoom('${imgSrc}', '${g.name}')" title="Ver foto en grande">
+                            </div>
+                        </div>
+                    `;
+                });
+
+                guisadosSection.innerHTML = `
+                    <div class="flex items-center gap-3 mb-4 border-b border-amber-900/40 pb-3">
+                        <div class="w-9 h-9 rounded-xl bg-[#D97706] text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                            <i class="fa-solid fa-fire-burner"></i>
+                        </div>
+                        <h2 class="font-serif font-black text-2xl text-amber-100 tracking-wide">Guisados del Día</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${cardsHtml}
+                    </div>
+                `;
+                container.appendChild(guisadosSection);
+            }
+
+            // 2. TÍTULO SEPARADOR DE MENÚ
+            const menuTitleDiv = document.createElement('div');
+            menuTitleDiv.className = "py-6 text-center flex items-center justify-center gap-4 my-4";
+            menuTitleDiv.innerHTML = `
+                <div class="h-0.5 bg-[#E7D7C1] flex-grow max-w-[100px]"></div>
+                <h2 class="font-serif font-black text-3xl sm:text-4xl text-[#8B3A2B] tracking-widest uppercase">MENÚ</h2>
+                <div class="h-0.5 bg-[#E7D7C1] flex-grow max-w-[100px]"></div>
+            `;
+            container.appendChild(menuTitleDiv);
 
             const searchVal = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
 
@@ -1508,6 +1581,15 @@ function renderAdminMenuEditor() {
             renderAdminRefrescosList();
         }
 // Funciones para el Zoom de imágenes
+        function openIngredientsModal(name, ingredients) {
+            document.getElementById('ingredientsTitle').textContent = name;
+            document.getElementById('ingredientsText').textContent = ingredients || "Sin detalles de ingredientes especificados.";
+            document.getElementById('ingredientsModal').classList.remove('hidden');
+        }
+
+        function closeIngredientsModal() {
+            document.getElementById('ingredientsModal').classList.add('hidden');
+        }
         function openImageZoom(imgSrc, imgTitle) {
             const modal = document.getElementById('imageZoomModal');
             const imgEl = document.getElementById('zoomedImageElement');
@@ -1545,8 +1627,73 @@ function renderAdminMenuEditor() {
                     // Si está lejos del centro, se esconde detrás del recuadro (0)
                     tab.style.transform = 'translateY(-50%) translateX(0)';
                 }
+                function renderAdminList(type) {
+            const listId = type === 'guisados' ? 'adminGuisadosList' : type === 'aguas' ? 'adminAguasList' : 'adminRefrescosList';
+            const list = document.getElementById(listId);
+            if (!list) return;
+            list.innerHTML = '';
+            const array = type === 'guisados' ? storeData.dailyGuisados : type === 'aguas' ? storeData.dailyAguas : storeData.dailyRefrescos;
+
+            array.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = "bg-stone-50 p-3 rounded-xl border border-stone-200 space-y-2";
+                
+                if (type === 'guisados') {
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <input type="text" value="${item.name}" onchange="updateArrayProp('guisados', ${index}, 'name', this.value)" placeholder="Nombre del guisado" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm font-bold text-stone-800">
+                            <button onclick="toggleArrayAvailability('${type}', ${index})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${item.available ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                                <i class="fa-solid ${item.available ? 'fa-check' : 'fa-ban'}"></i> <span>${item.available ? 'Disponible' : 'Agotado'}</span>
+                            </button>
+                        </div>
+                        <div>
+                            <input type="text" value="${item.ingredients || ''}" onchange="updateArrayProp('guisados', ${index}, 'ingredients', this.value)" placeholder="Ingredientes (Ej. Cerdo, achiote, naranja agria, cebolla morada...)" class="w-full px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-xs text-stone-600">
+                        </div>
+                        <div class="flex items-center justify-between gap-2">
+                            <input type="text" value="${item.image || ''}" onchange="updateArrayProp('guisados', ${index}, 'image', this.value)" placeholder="Enlace de la imagen (URL)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-xs text-stone-600">
+                            <div class="flex items-center gap-1">
+                                ${index > 0 ? `<button onclick="moveArrayItem('${type}',${index}, 'up')" title="Subir" class="p-1.5 bg-stone-200 hover:bg-amber-100 rounded text-stone-700"><i class="fa-solid fa-arrow-up text-xs"></i></button>` : ''}
+                                ${index < array.length - 1 ? `<button onclick="moveArrayItem('${type}',${index}, 'down')" title="Bajar" class="p-1.5 bg-stone-200 hover:bg-amber-100 rounded text-stone-700"><i class="fa-solid fa-arrow-down text-xs"></i></button>` : ''}
+                                <button onclick="removeArrayItem('${type}', ${index})" class="bg-rose-50 hover:bg-rose-100 text-rose-600 p-1.5 rounded ml-1"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <input type="text" value="${item.name}" onchange="updateArrayProp('${type}', ${index}, 'name', this.value)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm text-stone-800">
+                            <button onclick="toggleArrayAvailability('${type}', ${index})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${item.available ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                                <i class="fa-solid ${item.available ? 'fa-check' : 'fa-ban'}"></i> <span>${item.available ? 'Disponible' : 'Agotado'}</span>
+                            </button>
+                            <button onclick="removeArrayItem('${type}', ${index})" class="bg-stone-200 text-stone-600 hover:bg-rose-100 hover:text-rose-600 p-2 rounded-lg"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                        </div>
+                    `;
+                }
+                list.appendChild(row);
+            });
+        }
+                function updateArrayProp(type, index, prop, val) {
+            const array = type === 'guisados' ? storeData.dailyGuisados : type === 'aguas' ? storeData.dailyAguas : storeData.dailyRefrescos;
+            if (array[index]) {
+                array[index][prop] = val;
+                saveData();
+            }
+        }
+
+        function moveArrayItem(type, index, direction) {
+            const array = type === 'guisados' ? storeData.dailyGuisados : type === 'aguas' ? storeData.dailyAguas : storeData.dailyRefrescos;
+            const targetIndex = direction === 'up' ? index - 1 : index + 1;
+            if (targetIndex >= 0 && targetIndex < array.length) {
+                const temp = array[index];
+                array[index] = array[targetIndex];
+                array[targetIndex] = temp;
+                saveData();
+                renderAdminList(type);
+            }
+        }
             });
         });
+       
     </script>
 </body>
 </html>
