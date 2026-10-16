@@ -110,8 +110,8 @@
             
             <!-- Logo & Title -->
             <div class="flex items-center gap-4 text-center sm:text-left">
-                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-[#8B3A2B] text-amber-100 flex items-center justify-center border-4 border-[#D97706] shadow-md overflow-hidden flex-shrink-0">
-                    <img id="headerLogoImg" src="..." alt="Lili Logo" class="w-full h-full object-cover" onerror="...">
+                <div class="w-32 h-32 sm:w-44 sm:h-44 flex items-center justify-center flex-shrink-0">
+                    <img id="headerLogoImg" src="..." alt="Lili Logo" class="w-full h-full object-contain filter drop-shadow-md" onerror="this.src='https://placehold.co/180x180/transparent/8B3A2B?text=Logo'">
                 </div>
                 <div>
                     <h1 class="font-serif font-black text-2xl sm:text-3xl text-[#8B3A2B] tracking-wide">Las Cazuelas de Lili</h1>
@@ -328,28 +328,30 @@
     <!-- ADMIN PANEL MODAL -->
     <div id="adminModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
         <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-[#E7D7C1] overflow-hidden animate-in fade-in zoom-in duration-200">
-            <!-- Header -->
-            <div class="bg-[#2D150D] text-amber-100 p-4 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-gear text-[#D97706]"></i>
-                    <h3 class="font-serif font-bold text-lg">Panel de Administración - Las Cazuelas de Lili</h3>
+            <!-- Header & Tabs fijas en la parte superior -->
+            <div class="sticky top-0 z-20 bg-white border-b border-stone-200">
+                <div class="bg-[#2D150D] text-amber-100 p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-gear text-[#D97706]"></i>
+                        <h3 class="font-serif font-bold text-lg">Panel de Administración - Las Cazuelas de Lili</h3>
+                    </div>
+                    <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-stone-800 text-stone-300 hover:text-white flex items-center justify-center transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
-                <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-stone-800 text-stone-300 hover:text-white flex items-center justify-center transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+
+                <!-- Tabs inside Admin -->
+                <div class="flex bg-stone-100 border-b border-stone-200 text-xs font-semibold overflow-x-auto scrollbar-none">
+                    <button onclick="switchAdminTab('guisados')" id="adm-tab-guisados" class="flex-1 py-3 px-4 text-center border-b-2 border-[#8B3A2B] text-[#8B3A2B] bg-white transition whitespace-nowrap">Guisados del Día</button>
+                    <button onclick="switchAdminTab('aguas')" id="adm-tab-aguas" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Aguas del Día</button>
+                    <button onclick="switchAdminTab('refrescos')" id="adm-tab-refrescos" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Refrescos</button>
+                    <button onclick="switchAdminTab('menu')" id="adm-tab-menu" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Platillos y Precios</button>
+                    <button onclick="switchAdminTab('qr')" id="adm-tab-qr" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Códigos QR Mesas</button>
+                    <button onclick="switchAdminTab('settings')" id="adm-tab-settings" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Configuración</button>
+                </div>
             </div>
 
-            <!-- Tabs inside Admin -->
-            <div class="flex bg-stone-100 border-b border-stone-200 text-xs font-semibold overflow-x-auto scrollbar-none">
-                <button onclick="switchAdminTab('guisados')" id="adm-tab-guisados" class="flex-1 py-3 px-4 text-center border-b-2 border-[#8B3A2B] text-[#8B3A2B] bg-white transition whitespace-nowrap">Guisados del Día</button>
-                <button onclick="switchAdminTab('aguas')" id="adm-tab-aguas" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Aguas del Día</button>
-                <button onclick="switchAdminTab('refrescos')" id="adm-tab-refrescos" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Refrescos</button>
-                <button onclick="switchAdminTab('menu')" id="adm-tab-menu" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Platillos y Precios</button>
-                <button onclick="switchAdminTab('qr')" id="adm-tab-qr" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Códigos QR Mesas</button>
-                <button onclick="switchAdminTab('settings')" id="adm-tab-settings" class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-stone-600 hover:bg-stone-50 transition whitespace-nowrap">Configuración</button>
-            </div>
-
-            <!-- Admin Body Content -->
+            <!-- Admin Body Content (Solo este contenedor se desplazará) -->
             <div class="p-5 overflow-y-auto flex-grow space-y-4" id="adminBodyContent">
                 <!-- Dynamically populated -->
             </div>
@@ -650,11 +652,11 @@ menuDocRef.onSnapshot((doc) => {
             const container = document.getElementById('menuContainer');
             if (!container) return;
             container.innerHTML = '';
-            // 1. DIBUJAR SECCIÓN DESTACADA: GUISADOS DEL DÍA
+// 1. DIBUJAR SECCIÓN DESTACADA: GUISADOS DEL DÍA (DESPLAZAMIENTO HORIZONTAL)
             const availableGuisados = (storeData.dailyGuisados || []).filter(g => g.available);
             if (availableGuisados.length > 0) {
                 const guisadosSection = document.createElement('div');
-                guisadosSection.className = "mb-10 bg-[#8B3A2B] rounded-3xl p-5 sm:p-6 shadow-xl border-2 border-[#D97706]";
+                guisadosSection.className = "mb-8 bg-[#8B3A2B] rounded-3xl p-5 sm:p-6 shadow-xl border-2 border-[#D97706]";
                 
                 let cardsHtml = '';
                 availableGuisados.forEach(g => {
@@ -662,15 +664,15 @@ menuDocRef.onSnapshot((doc) => {
                     const ingText = (g.ingredients || '').replace(/'/g, "\\'");
                     
                     cardsHtml += `
-                        <div class="bg-white rounded-2xl p-4 flex items-center justify-between gap-3 shadow-md border border-[#E7D7C1]">
-                            <div class="flex flex-col justify-between h-full py-1">
-                                <h3 class="font-serif font-black text-lg sm:text-xl text-[#8B3A2B] leading-tight">${g.name}</h3>
+                        <div class="min-w-[260px] sm:min-w-[300px] max-w-[320px] bg-white rounded-2xl p-4 flex items-center justify-between gap-3 shadow-md border border-[#E7D7C1] flex-shrink-0">
+                            <div class="flex flex-col justify-between h-full py-1 flex-grow">
+                                <h3 class="font-serif font-black text-base sm:text-lg text-[#8B3A2B] leading-tight line-clamp-2">${g.name}</h3>
                                 <button onclick="openIngredientsModal('${g.name}', '${ingText}')" class="mt-3 text-left w-fit bg-[#F4EADB] hover:bg-amber-200 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm border border-amber-300">
                                     <i class="fa-solid fa-list-check text-xs"></i>
                                     <span>Ver ingredientes</span>
                                 </button>
                             </div>
-                            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 border-2 border-[#E7D7C1]">
+                            <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-xl overflow-hidden flex-shrink-0 border-2 border-[#E7D7C1]">
                                 <img src="${imgSrc}" alt="${g.name}" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition" onclick="openImageZoom('${imgSrc}', '${g.name}')" title="Ver foto en grande">
                             </div>
                         </div>
@@ -678,29 +680,32 @@ menuDocRef.onSnapshot((doc) => {
                 });
 
                 guisadosSection.innerHTML = `
-                    <div class="flex items-center gap-3 mb-4 border-b border-amber-900/40 pb-3">
-                        <div class="w-9 h-9 rounded-xl bg-[#D97706] text-white flex items-center justify-center font-bold text-lg shadow-sm">
-                            <i class="fa-solid fa-fire-burner"></i>
+                    <div class="flex items-center justify-between mb-4 border-b border-amber-900/40 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-[#D97706] text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                                <i class="fa-solid fa-fire-burner"></i>
+                            </div>
+                            <h2 class="font-serif font-black text-2xl text-amber-100 tracking-wide">Guisados del Día</h2>
                         </div>
-                        <h2 class="font-serif font-black text-2xl text-amber-100 tracking-wide">Guisados del Día</h2>
+                        <span class="text-amber-200/70 text-xs font-medium hidden sm:flex items-center gap-1"><i class="fa-solid fa-arrow-right-long"></i> Desliza para ver más</span>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-none snap-x">
                         ${cardsHtml}
                     </div>
                 `;
                 container.appendChild(guisadosSection);
             }
 
-            // 2. TÍTULO SEPARADOR DE MENÚ
+            // 2. TÍTULO SEPARADOR DE MENÚ (GRANDE)
             const menuTitleDiv = document.createElement('div');
-            menuTitleDiv.className = "py-6 text-center flex items-center justify-center gap-4 my-4";
+            menuTitleDiv.className = "py-8 text-center flex items-center justify-center gap-6 my-6";
             menuTitleDiv.innerHTML = `
-                <div class="h-0.5 bg-[#E7D7C1] flex-grow max-w-[100px]"></div>
-                <h2 class="font-serif font-black text-3xl sm:text-4xl text-[#8B3A2B] tracking-widest uppercase">MENÚ</h2>
-                <div class="h-0.5 bg-[#E7D7C1] flex-grow max-w-[100px]"></div>
+                <div class="h-1 bg-[#8B3A2B] flex-grow max-w-[120px] sm:max-w-[180px] rounded-full opacity-80"></div>
+                <h2 class="font-serif font-black text-5xl sm:text-6xl text-[#8B3A2B] tracking-widest uppercase shadow-sm">MENÚ</h2>
+                <div class="h-1 bg-[#8B3A2B] flex-grow max-w-[120px] sm:max-w-[180px] rounded-full opacity-80"></div>
             `;
             container.appendChild(menuTitleDiv);
-
+            
             const searchVal = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
 
             storeData.categories.forEach(cat => {
