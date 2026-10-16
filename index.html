@@ -110,8 +110,8 @@
             
             <!-- Logo & Title -->
             <div class="flex items-center gap-4 text-center sm:text-left">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#8B3A2B] text-amber-100 flex items-center justify-center border-4 border-[#D97706] shadow-md overflow-hidden flex-shrink-0">
-                    <img id="headerLogoImg" src="${storeData.logoUrl || 'https://placehold.co/120x120/8B3A2B/F4EADB?text=Lili'}" alt="Lili Logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/120x120/8B3A2B/F4EADB?text=Lili'">
+                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-[#8B3A2B] text-amber-100 flex items-center justify-center border-4 border-[#D97706] shadow-md overflow-hidden flex-shrink-0">
+                    <img id="headerLogoImg" src="..." alt="Lili Logo" class="w-full h-full object-cover" onerror="...">
                 </div>
                 <div>
                     <h1 class="font-serif font-black text-2xl sm:text-3xl text-[#8B3A2B] tracking-wide">Las Cazuelas de Lili</h1>
@@ -649,7 +649,7 @@ menuDocRef.onSnapshot((doc) => {
                             <i class="fa-solid ${cat.icon || 'fa-utensils'}"></i>
                         </div>
                         <div>
-                            <h2 class="font-serif font-black text-xl text-[#8B3A2B]">${cat.name}</h2>
+                            <h2 class="font-serif font-black text-2xl text-[#8B3A2B]">${cat.name}</h2>
                             <p class="text-xs text-stone-500">${cat.description}</p>
                         </div>
                     </div>
