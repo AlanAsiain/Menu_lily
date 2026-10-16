@@ -802,8 +802,8 @@ menuDocRef.onSnapshot((doc) => {
 
                     card.innerHTML = `
                         <!-- Pestaña lateral deslizante con el símbolo + -->
-                        <div class="slide-tab" onclick="event.stopPropagation(); handleItemClick('${item.id}')">
-                            <i class="fa-solid fa-plus text-sm font-bold"></i>
+                        <div class="slide-tab" onclick="event.stopPropagation(); handleItemClick('${item.id}');">
+                            <i class="fa-solid fa-plus text-sm font-bold pointer-events-none"></i>
                         </div>
 
                         <div class="flex-grow space-y-1.5 pl-2">
