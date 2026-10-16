@@ -1365,7 +1365,7 @@ function renderAdminMenuEditor() {
             });
             renderAdminContent();
         }
-
+        
         function renderAdminContent() {
             const content = document.getElementById('adminBodyContent');
             if (!content) return;
@@ -1375,88 +1375,60 @@ function renderAdminMenuEditor() {
                 content.innerHTML = `
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-stone-800 text-sm">Guisados Disponibles Hoy</h4>
-                            <button onclick="addAdminGuisado()" class="bg-amber-100 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200 transition">
-                                <i class="fa-solid fa-plus mr-1"></i> Agregar Guisado
-                            </button>
+                            <div>
+                                <h4 class="font-bold text-stone-800 text-sm">Guisados Disponibles Hoy</h4>
+                                <p class="text-xs text-stone-500">Configura nombre, ingredientes, foto y orden de tus guisados.</p>
+                            </div>
+                            <button onclick="addAdminGuisado()" class="bg-amber-100 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200"><i class="fa-solid fa-plus mr-1"></i> Agregar</button>
                         </div>
-                        <p class="text-xs text-stone-500">Puedes marcar un guisado como "Agotado" para que no aparezca como opción al cliente sin necesidad de borrarlo.</p>
-                        <div id="adminGuisadosList" class="space-y-2 mt-3"></div>
-                    </div>
-                `;
-                renderAdminGuisadosList();
+                        <div id="adminGuisadosList" class="space-y-3 mt-3"></div>
+                    </div>`;
+                renderAdminList('guisados');
             } else if (activeAdminTab === 'aguas') {
                 content.innerHTML = `
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
                             <h4 class="font-bold text-stone-800 text-sm">Aguas Frescas del Día</h4>
-                            <button onclick="addAdminAgua()" class="bg-amber-100 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200 transition">
-                                <i class="fa-solid fa-plus mr-1"></i> Agregar Agua
-                            </button>
+                            <button onclick="addAdminAgua()" class="bg-amber-100 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200"><i class="fa-solid fa-plus mr-1"></i> Agregar</button>
                         </div>
-                        <p class="text-xs text-stone-500">Administra los sabores de agua fresca del día o márcalas como agotadas.</p>
                         <div id="adminAguasList" class="space-y-2 mt-3"></div>
-                    </div>
-                `;
-                renderAdminAguasList();
+                    </div>`;
+                renderAdminList('aguas');
             } else if (activeAdminTab === 'refrescos') {
                 content.innerHTML = `
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-stone-800 text-sm">Refrescos Disponibles</h4>
-                            <button onclick="addAdminRefresco()" class="bg-amber-100 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200 transition">
-                                <i class="fa-solid fa-plus mr-1"></i> Agregar Refresco
-                            </button>
+                            <h4 class="font-bold text-stone-800 text-sm">Refrescos</h4>
+                            <button onclick="addAdminRefresco()" class="bg-amber-100 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200"><i class="fa-solid fa-plus mr-1"></i> Agregar</button>
                         </div>
-                        <p class="text-xs text-stone-500">Gestiona las marcas/sabores de refrescos en existencia.</p>
                         <div id="adminRefrescosList" class="space-y-2 mt-3"></div>
-                    </div>
-                `;
-                renderAdminRefrescosList();
+                    </div>`;
+                renderAdminList('refrescos');
             } else if (activeAdminTab === 'menu') {
-                content.innerHTML = `
-                    <div class="space-y-4">
-                        <h4 class="font-bold text-stone-800 text-sm">Precios y Platillos del Menú</h4>
-                        <p class="text-xs text-stone-500">Modifica los precios o nombres de tus platillos principales.</p>
-                        <div class="space-y-4" id="adminMenuCategories"></div>
-                    </div>
-                `;
+                content.innerHTML = `<div class="space-y-4"><h4 class="font-bold text-stone-800 text-sm">Precios, Descripciones y Platillos</h4><div class="space-y-4" id="adminMenuCategories"></div></div>`;
                 renderAdminMenuEditor();
             } else if (activeAdminTab === 'qr') {
                 content.innerHTML = `
                     <div class="space-y-4">
-                        <h4 class="font-bold text-stone-800 text-sm">Generador de Códigos QR por Mesa</h4>
-                        <p class="text-xs text-stone-500">Genera enlaces y códigos QR automáticos para cada mesa de tu restaurante. Al escanearlo, el menú asignará automáticamente la mesa.</p>
+                        <h4 class="font-bold text-stone-800 text-sm">Códigos QR por Mesa</h4>
                         <div class="flex gap-2 items-center bg-stone-50 p-3 rounded-xl border border-stone-200">
-                            <label class="text-xs font-bold text-stone-700">Número de Mesa:</label>
+                            <label class="text-xs font-bold text-stone-700">Mesa:</label>
                             <input type="number" id="qrTableNumInput" min="1" max="99" value="1" class="w-20 px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-sm font-bold text-center">
-                            <button onclick="generateTableQR()" class="bg-[#8B3A2B] hover:bg-[#722F22] text-white px-4 py-1.5 rounded-lg text-xs font-bold transition">Generar QR</button>
+                            <button onclick="generateTableQR()" class="bg-[#8B3A2B] text-white px-4 py-1.5 rounded-lg text-xs font-bold">Generar</button>
                         </div>
                         <div id="qrResultContainer" class="text-center p-6 bg-stone-50 border border-stone-200 rounded-xl space-y-3"></div>
-                    </div>
-                `;
+                    </div>`;
                 generateTableQR(1);
-                } else if (activeAdminTab === 'settings') {
+            } else if (activeAdminTab === 'settings') {
                 content.innerHTML = `
                     <div class="space-y-4">
-                        <h4 class="font-bold text-stone-800 text-sm">Configuración General y Seguridad</h4>
-                        <p class="text-xs text-stone-500">Actualiza el logo, el número de WhatsApp y la contraseña de administrador.</p>
+                        <h4 class="font-bold text-stone-800 text-sm">Configuración General</h4>
                         <div class="space-y-3">
-                            <div>
-                                <label class="block text-xs font-bold text-stone-700 mb-1">Enlace de la Foto de Perfil / Logo (URL)</label>
-                                <input type="text" id="adminLogoInput" value="${storeData.logoUrl || ''}" placeholder="https://..." class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-stone-700 mb-1">Número de WhatsApp (Comandas)</label>
-                                <input type="text" id="adminWhatsAppInput" value="${storeData.whatsappNumber || ''}" placeholder="Ej. 5219851234567" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-stone-700 mb-1">Contraseña de Administrador</label>
-                                <input type="text" id="adminNewPassInput" value="${storeData.adminPassword || 'lili123'}" placeholder="Nueva contraseña" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm font-medium focus:outline-none focus:ring-1 focus:ring-[#8B3A2B]">
-                            </div>
+                            <div><label class="block text-xs font-bold text-stone-700 mb-1">Enlace de la Foto de Perfil / Logo (URL)</label><input type="text" id="adminLogoInput" value="${storeData.logoUrl || ''}" placeholder="https://..." class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm"></div>
+                            <div><label class="block text-xs font-bold text-stone-700 mb-1">WhatsApp</label><input type="text" id="adminWhatsAppInput" value="${storeData.whatsappNumber || ''}" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm"></div>
+                            <div><label class="block text-xs font-bold text-stone-700 mb-1">Contraseña Admin</label><input type="text" id="adminNewPassInput" value="${storeData.adminPassword || 'lili123'}" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm"></div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }
         }
 
@@ -1491,9 +1463,15 @@ function renderAdminMenuEditor() {
             renderAdminGuisadosList();
         }
 
-        function addAdminGuisado() {
-            storeData.dailyGuisados.push({ name: "Nuevo Guisado", available: true });
-            renderAdminGuisadosList();
+        function addAdminGuisado() { 
+            storeData.dailyGuisados.push({ 
+                name: "Nuevo Guisado", 
+                ingredients: "Ingredientes del guisado...", 
+                image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Guisado", 
+                available: true 
+            }); 
+            saveData(); 
+            renderAdminList('guisados'); 
         }
 
         function removeAdminGuisado(index) {
