@@ -1405,7 +1405,8 @@ function renderAdminMenuEditor() {
                 message += `📦 *Tipo:* Pedido a Domicilio / Para Llevar\n`;
             } else {
                 message += `📍 *Mesa:* ${currentTable}\n`;
-            }            message += `⏰ *Hora:* ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n\n`;
+            }
+            message += `⏰ *Hora:* ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n\n`;
             message += `------------------------------------\n`;
             message += `*DETALLE DE LA COMANDA:*\n`;
 
@@ -1438,17 +1439,28 @@ function renderAdminMenuEditor() {
             const phone = storeData.whatsappNumber || "5219850000000";
             const whatsappURL = `https://wa.me/${phone}?text=${encodedMessage}`;
 
+            // Abrir WhatsApp
             window.open(whatsappURL, '_blank');
+
+            // Limpiar datos temporales del cliente (carrito, mesa, notas)
             cart = [];
             localStorage.removeItem('cazuelas_cart');
             localStorage.removeItem('cazuelas_table');
             currentTable = null;
+
+            const notesInput = document.getElementById('orderNotes');
+            if (notesInput) notesInput.value = '';
+
+            // Actualizar la interfaz visual del cliente y cerrar el carrito
             updateCartUI();
             updateTableUI();
+            closeCartModal();
+
+            // Mostrar modal de mesa limpio para que simule un nuevo inicio limpio
             openTableModal();
-
+            showToast("¡Pedido enviado con éxito!");
         }
-
+        
         function switchAdminTab(tab) {
             activeAdminTab = tab;
             ['guisados', 'aguas', 'refrescos', 'menu', 'qr', 'settings'].forEach(t => {
