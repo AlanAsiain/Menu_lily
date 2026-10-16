@@ -721,10 +721,10 @@ menuDocRef.onSnapshot((doc) => {
                     
                     cardsHtml += `
                         <div class="w-[320px] sm:w-[350px] h-[150px] bg-white rounded-2xl flex items-stretch justify-between shadow-md border border-[#E7D7C1] overflow-hidden flex-shrink-0">
-                            <!-- Contenido de Texto (Lado Izquierdo) -->
-                            <div class="p-4 flex flex-col justify-between flex-grow h-full">
-                                <h3 class="font-serif font-black text-base sm:text-lg text-[#8B3A2B] leading-tight line-clamp-2">${g.name}</h3>
-                                <button onclick="openIngredientsModal('${g.name}', '${ingText}')" class="mt-2 text-left w-fit bg-[#F4EADB] hover:bg-amber-200 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm border border-amber-300">
+                            <!-- Contenido de Texto (Lado Izquierdo - Centrado verticalmente y más grande) -->
+                            <div class="p-4 flex flex-col justify-center items-start flex-grow h-full space-y-3 pl-4">
+                                <h3 class="font-serif font-black text-lg sm:text-xl text-[#8B3A2B] leading-tight line-clamp-2">${g.name}</h3>
+                                <button onclick="event.stopPropagation(); openIngredientsModal('${g.name}', '${ingText}')" class="text-left w-fit bg-[#F4EADB] hover:bg-amber-200 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm border border-amber-300">
                                     <i class="fa-solid fa-list-check text-xs"></i>
                                     <span>Ver ingredientes</span>
                                 </button>
@@ -1299,14 +1299,21 @@ function renderAdminMenuEditor() {
             }
 
             if (activeCustomItem.requiresGuisados) {
-                const selects = document.querySelectorAll('.guisado-select');
+                const selects = document.querySelectorAll('#modalBodyContent select');
                 let chosenGuisados = [];
-                for (let sel of selects) {
-                    if (!sel.value) {
-                        showToast("Por favor selecciona todos los guisados requeridos", "error");
-                        return;
+                
+                // Filtramos únicamente los selectores de guisados (excluyendo agua, refresco o chilaquiles)
+                selects.forEach(sel => {
+                    if (sel.id !== 'agua-select-main' && sel.id !== 'refresco-select-main' && sel.id !== 'salsa-select-opt' && sel.id !== 'proteina-select-opt') {
+                        if (sel.value) {
+                            chosenGuisados.push(sel.value);
+                        }
                     }
-                    chosenGuisados.push(sel.value);
+                });
+
+                if (chosenGuisados.length < activeCustomItem.requiresGuisados) {
+                    showToast("Por favor selecciona todos los guisados requeridos", "error");
+                    return;
                 }
                 customizations.guisados = chosenGuisados;
             }
