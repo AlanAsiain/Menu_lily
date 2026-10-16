@@ -69,7 +69,7 @@
             background: #D97706;
             border-radius: 3px;
         }
-       /* Estilos para la pestaña lateral deslizante de "+" */
+      /* Estilos para la pestaña lateral deslizante de "+" */
         .menu-item-card {
             position: relative;
             overflow: visible !important;
@@ -98,8 +98,8 @@
             background-color: #8B3A2B;
             color: #ffffff;
             border-color: #8B3A2B;
-        }
-    </style>
+        } 
+        </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-amber-200 selection:text-amber-900">
 
@@ -714,14 +714,8 @@ menuDocRef.onSnapshot((doc) => {
             const container = document.getElementById('menuContainer');
             if (!container) return;
             container.innerHTML = '';
-// 1. DIBUJAR SECCIÓN DESTACADA: GUISADOS DEL DÍA (IMAGEN EN TODO EL LATERAL DERECHO)
+// 1. DIBUJAR SECCIÓN DESTACADA: GUISADOS DEL DÍA
             const availableGuisados = (storeData.dailyGuisados || []).filter(g => g.available);
-            if (availableGuisados.length > 0) {
-                const guisadosSection = document.createElement('div');
-                guisadosSection.className = "mb-8 bg-[#8B3A2B] rounded-3xl p-5 sm:p-6 shadow-xl border-2 border-[#D97706]";
-                
-                let cardsHtml = '';
-                const availableGuisados = (storeData.dailyGuisados || []).filter(g => g.available);
             if (availableGuisados.length > 0) {
                 const guisadosSection = document.createElement('div');
                 guisadosSection.className = "mb-8 bg-[#8B3A2B] rounded-3xl p-5 sm:p-6 shadow-xl border-2 border-[#D97706]";
@@ -738,7 +732,7 @@ menuDocRef.onSnapshot((doc) => {
                                 <i class="fa-solid fa-plus text-sm font-bold pointer-events-none"></i>
                             </div>
 
-                            <!-- Contenido de Texto (Lado Izquierdo - Centrado y más grande) -->
+                            <!-- Contenido de Texto (Lado Izquierdo - Centrado verticalmente y más grande) -->
                             <div class="p-4 flex flex-col justify-center items-start flex-grow h-full space-y-2.5 pl-3">
                                 <h3 class="font-serif font-black text-lg sm:text-xl text-[#8B3A2B] leading-tight line-clamp-2">${g.name}</h3>
                                 <button onclick="event.stopPropagation(); openIngredientsModal('${g.name}', '${ingText}')" class="text-left w-fit bg-[#F4EADB] hover:bg-amber-200 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm border border-amber-300">
@@ -1428,8 +1422,8 @@ function renderAdminMenuEditor() {
                     if (item.customizations.salsa && item.customizations.proteina) {
                         message += `   🌶️ Opción: ${item.customizations.salsa} con ${item.customizations.proteina}\n`;
                     }
-                    if (item.customizations.guisados) {
-                        message += `   🍲 Guisados: ${item.customizations.guisados.join(' + ')}\n`;
+                    if (item.customizations.guisados && item.customizations.guisados.length > 0) {
+                        customText += `<div class="text-[11px] text-[#8B3A2B] font-medium"><i class="fa-solid fa-bowl-food mr-1"></i> Guisados: ${item.customizations.guisados.join(', ')}</div>`;
                     }
                     if (item.customizations.agua) {
                         message += `   🥤 Agua (${item.customizations.aguaSize}): ${item.customizations.agua}\n`;
