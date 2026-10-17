@@ -720,17 +720,18 @@ menuDocRef.onSnapshot((doc) => {
                     const ingText = (g.ingredients || '').replace(/'/g, "\\'");
                     
                     cardsHtml += `
-                        <div class="w-[320px] sm:w-[350px] h-[150px] bg-white rounded-2xl flex items-stretch justify-between shadow-md border border-[#E7D7C1] overflow-hidden flex-shrink-0">
-                            <!-- Contenido de Texto (Lado Izquierdo - Centrado verticalmente y más grande) -->
-                            <div class="p-4 flex flex-col justify-center items-start flex-grow h-full space-y-3 pl-4">
-                                <h3 class="font-serif font-black text-lg sm:text-xl text-[#8B3A2B] leading-tight line-clamp-2">${g.name}</h3>
-                                <button onclick="event.stopPropagation(); openIngredientsModal('${g.name}', '${ingText}')" class="text-left w-fit bg-[#F4EADB] hover:bg-amber-200 text-[#8B3A2B] px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm border border-amber-300">
-                                    <i class="fa-solid fa-list-check text-xs"></i>
-                                    <span>Ver ingredientes</span>
-                                </button>
+                        <div class="rustic-card w-[320px] sm:w-[350px] h-[150px] bg-white rounded-2xl flex items-stretch justify-between shadow-md border border-[#E7D7C1] overflow-hidden flex-shrink-0 menu-item-card cursor-pointer" onclick="handleItemByGuisadoName('${g.name}')">
+                            <!-- Pestaña lateral deslizante con el símbolo + -->
+                            <div class="slide-tab" onclick="event.stopPropagation(); handleItemByGuisadoName('${g.name}');">
+                                <i class="fa-solid fa-plus text-sm font-bold pointer-events-none"></i>
+                            </div>
+
+                            <!-- Contenido de Texto (Lado Izquierdo - Título más grande y centrado) -->
+                            <div class="p-4 flex flex-col justify-center items-start flex-grow h-full pl-4">
+                                <h3 class="font-serif font-black text-xl sm:text-2xl text-[#8B3A2B] leading-tight line-clamp-3">${g.name}</h3>
                             </div>
                             <!-- Imagen en todo el lateral derecho (sin marco) -->
-                            <div class="w-[130px] sm:w-[150px] h-full flex-shrink-0 relative overflow-hidden cursor-pointer" onclick="openImageZoom('${imgSrc}', '${g.name}')" title="Ver foto en grande">
+                            <div class="w-[130px] sm:w-[150px] h-full flex-shrink-0 relative overflow-hidden cursor-pointer" onclick="event.stopPropagation(); openImageZoom('${imgSrc}', '${g.name}')" title="Ver foto en grande">
                                 <img src="${imgSrc}" alt="${g.name}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
                             </div>
                         </div>
@@ -1691,10 +1692,7 @@ function renderAdminMenuEditor() {
                                 <i class="fa-solid ${item.available ? 'fa-check' : 'fa-ban'}"></i> <span>${item.available ? 'Disponible' : 'Agotado'}</span>
                             </button>
                         </div>
-                        <div>
-                            <input type="text" value="${item.ingredients || ''}" onchange="updateArrayProp('guisados', ${index}, 'ingredients', this.value)" placeholder="Ingredientes (Ej. Cerdo, achiote, naranja agria...)" class="w-full px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-xs text-stone-600">
-                        </div>
-                        <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center justify-between gap-2 pt-1">
                             <input type="text" value="${item.image || ''}" onchange="updateArrayProp('guisados', ${index}, 'image', this.value)" placeholder="Enlace de la imagen (URL)" class="flex-grow px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-xs text-stone-600">
                             <div class="flex items-center gap-1">
                                 ${index > 0 ? `<button onclick="moveArrayItem('${type}',${index}, 'up')" title="Subir" class="p-1.5 bg-stone-200 hover:bg-amber-100 rounded text-stone-700"><i class="fa-solid fa-arrow-up text-xs"></i></button>` : ''}
@@ -1741,7 +1739,6 @@ function renderAdminMenuEditor() {
         function addAdminGuisado() { 
             storeData.dailyGuisados.push({ 
                 name: "Nuevo Guisado", 
-                ingredients: "Ingredientes del guisado...", 
                 image: "https://placehold.co/400x300/8B3A2B/F4EADB?text=Guisado", 
                 available: true 
             }); 
