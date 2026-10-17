@@ -472,6 +472,7 @@
         const db = firebase.firestore();
         const menuDocRef = db.collection("config").doc("storeData");
         const DEFAULT_STORE_DATA = {
+            deliveryFee: 15,
             whatsappNumber: "5219850000000",
             adminPassword: "lili123",
             dailyGuisados: [
@@ -870,7 +871,11 @@ menuDocRef.onSnapshot((doc) => {
             const cartTotalSummary = document.getElementById('cartTotalSummary');
             
             const totalItems = cart.reduce((sum, item) => sum + 1, 0);
-            const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+            let totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+
+            if (currentTable === "DOMICILIO" && cart.length > 0) {
+                totalPrice += parseFloat(storeData.deliveryFee || 15);
+            }
 
             if (cartCountBadge) cartCountBadge.textContent = totalItems;
             if (cartTotalSummary) cartTotalSummary.textContent = `$${totalPrice}.00`;
@@ -1034,10 +1039,12 @@ function renderAdminMenuEditor() {
             const waInput = document.getElementById('adminWhatsAppInput');
             const passInput = document.getElementById('adminNewPassInput');
             const logoInput = document.getElementById('adminLogoInput');
+            const feeInput = document.getElementById('adminDeliveryFeeInput');
 
             if (waInput) storeData.whatsappNumber = waInput.value.trim();
             if (passInput && passInput.value.trim()) storeData.adminPassword = passInput.value.trim();
             if (logoInput) storeData.logoUrl = logoInput.value.trim();
+            if (feeInput) storeData.deliveryFee = parseFloat(feeInput.value) || 0;
 
             saveData();
             renderMenu();
@@ -1384,6 +1391,19 @@ function renderAdminMenuEditor() {
                 list.appendChild(div);
             });
 
+            if (currentTable === "DOMICILIO" && cart.length > 0) {
+                const deliveryFee = parseFloat(storeData.deliveryFee || 15);
+                totalPrice += deliveryFee;
+
+                const divFee = document.createElement('div');
+                divFee.className = "py-2.5 px-3 bg-amber-50 rounded-xl flex items-center justify-between text-xs font-bold text-amber-900 my-2 border border-amber-200";
+                divFee.innerHTML = `
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-motorcycle text-[#8B3A2B]"></i> Costo de envío a domicilio:</span>
+                    <span class="text-[#8B3A2B]">$${deliveryFee}.00</span>
+                `;
+                list.appendChild(divFee);
+            }
+
             const cartModalTotal = document.getElementById('cartModalTotal');
             if (cartModalTotal) cartModalTotal.textContent = `$${totalPrice}.00`;
         }
@@ -1430,6 +1450,12 @@ function renderAdminMenuEditor() {
                     }
                 }
             });
+
+            if (currentTable === "DOMICILIO") {
+                const deliveryFee = parseFloat(storeData.deliveryFee || 15);
+                totalPrice += deliveryFee;
+                message += `\n🛵 *Envío a domicilio:* $${deliveryFee}.00\n`;
+            }
 
             message += `------------------------------------\n`;
             if (notes) {
@@ -1538,12 +1564,12 @@ function renderAdminMenuEditor() {
                         <h4 class="font-bold text-stone-800 text-sm">Configuración General</h4>
                         <div class="space-y-3">
                             <div><label class="block text-xs font-bold text-stone-700 mb-1">Enlace de la Foto de Perfil / Logo (URL)</label><input type="text" id="adminLogoInput" value="${storeData.logoUrl || ''}" placeholder="https://..." class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm"></div>
+                            <div><label class="block text-xs font-bold text-stone-700 mb-1">Costo de Envío a Domicilio ($ MXN)</label><input type="number" id="adminDeliveryFeeInput" value="${storeData.deliveryFee || 15}" min="0" placeholder="15" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm font-bold text-[#8B3A2B]"></div>
                             <div><label class="block text-xs font-bold text-stone-700 mb-1">WhatsApp</label><input type="text" id="adminWhatsAppInput" value="${storeData.whatsappNumber || ''}" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm"></div>
                             <div><label class="block text-xs font-bold text-stone-700 mb-1">Contraseña Admin</label><input type="text" id="adminNewPassInput" value="${storeData.adminPassword || 'lili123'}" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-sm"></div>
                         </div>
                     </div>`;
             }
-        }
         
         function renderAdminAguasList() {
             const list = document.getElementById('adminAguasList');
