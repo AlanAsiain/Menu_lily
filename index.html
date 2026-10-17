@@ -115,7 +115,7 @@
                 </div>
                 <div>
                     <h1 class="font-serif font-black text-2xl sm:text-3xl text-[#8B3A2B] tracking-wide">Las Cazuelas de Lili</h1>
-                    <p class="text-xs sm:text-sm text-stone-600 font-medium italic">Tacos de Guisados & Antojitos Yucatecos</p>
+                    <p class="text-xs sm:text-sm text-stone-600 font-medium italic">Tacos de Guisados & Antojitos Mexicanos</p>
                 </div>
             </div>
 
@@ -459,7 +459,7 @@
     <!-- Footer Credit -->
     <footer class="text-center py-6 text-xs text-stone-500 border-t border-[#E7D7C1] mt-auto">
         <p class="font-serif text-[#8B3A2B] font-bold text-sm">Las Cazuelas de Lili • Valladolid, Yucatán</p>
-        <p class="mt-1">Comida casera tradicional con el auténtico sazón yucateco.</p>
+        <p class="mt-1">Comida casera tradicional con el auténtico sazón mexicano.</p>
     </footer>
 
     <!-- JavaScript Application Logic -->
@@ -521,7 +521,7 @@
                 {
                     id: "platos",
                     name: "Platos de Guisado",
-                    description: "Incluye arroz, frijoles, tortillas hechas a mano y agua fresca (500 ml).",
+                    description: "Incluye arroz, frijoles, tortillas y agua fresca (500 ml).",
                     icon: "fa-bowl-food",
                     items: [
                         {
@@ -738,14 +738,16 @@ menuDocRef.onSnapshot((doc) => {
                 });
 
                 guisadosSection.innerHTML = `
-                    <div class="flex items-center justify-between mb-4 border-b border-amber-900/40 pb-3">
+                    <div class="mb-4 border-b border-amber-900/40 pb-3">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-[#D97706] text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                            <div class="w-9 h-9 rounded-xl bg-[#D97706] text-white flex items-center justify-center font-bold text-lg shadow-sm flex-shrink-0">
                                 <i class="fa-solid fa-fire-burner"></i>
                             </div>
-                            <h2 class="font-serif font-black text-2xl text-amber-100 tracking-wide">Guisados del Día</h2>
+                            <div>
+                                <h2 class="font-serif font-black text-xl sm:text-2xl text-amber-100 tracking-wide">Guisados del Día</h2>
+                                <span class="text-amber-200/80 text-xs font-medium flex items-center gap-1 mt-0.5"><i class="fa-solid fa-arrow-right-long"></i> Desliza para ver más</span>
+                            </div>
                         </div>
-                        <span class="text-amber-200/70 text-xs font-medium hidden sm:flex items-center gap-1"><i class="fa-solid fa-arrow-right-long"></i> Desliza para ver más</span>
                     </div>
                     <div class="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-none snap-x">
                         ${cardsHtml}
